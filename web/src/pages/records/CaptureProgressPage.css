@@ -1,0 +1,118 @@
+/* Capture progress, per the Figma. Card, badge, notice, callout and buttons come
+   from components/ui. */
+
+/* 832px column, centered: back link, then the card (or the failure callout) */
+.capture-progress {
+  width: min(832px, 100%);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 24px;
+}
+
+.capture-progress > .ui-link { align-self: flex-start; }
+.capture-progress > .alert { margin: 0; }
+
+/* Title + id line on the left, state badge on the right */
+.capture-progress-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.capture-progress-head .state-badge { flex: none; margin-top: 8px; }
+
+.capture-progress-id {
+  margin: 4px 0 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--color-muted);
+}
+
+/* Address and start, side by side */
+.capture-progress-data {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+  margin: 0;
+}
+
+.capture-progress-data > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.capture-progress-data dt {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--color-muted);
+}
+
+.capture-progress-data dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+
+/* Steps: 48px rows with a line above and below; neighbours share one line */
+.capture-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.capture-step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.capture-step + .capture-step { margin-top: -1px; }
+
+.capture-step-name {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--color-ink);
+}
+
+.capture-step-status {
+  flex: none;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.capture-step.done .capture-step-status { color: var(--color-ok); }
+.capture-step.current .capture-step-name { font-weight: 500; }
+.capture-step.current .capture-step-status { color: var(--color-pending); }
+.capture-step.waiting .capture-step-name,
+.capture-step.waiting .capture-step-status { color: var(--color-muted); }
+
+/* Footer: optional link on the left, cancel on the right */
+.capture-progress-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+@media (max-width: 800px) {
+  .capture-progress-head { flex-direction: column; }
+  .capture-progress-data { grid-template-columns: 1fr; }
+}
