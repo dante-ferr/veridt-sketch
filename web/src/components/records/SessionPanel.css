@@ -1,0 +1,28 @@
+.session-data {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+}
+
+.session-data > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.session-data dt {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--color-muted);
+}
+
+.session-data dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--color-ink);
+}

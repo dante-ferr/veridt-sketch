@@ -4,8 +4,8 @@ import { cx } from "../utils/cx";
 import "./Button.css";
 
 type ButtonLook = {
-  /** primary = seal fill, outline = muted border on white. */
-  variant?: "primary" | "outline";
+  /** primary = seal fill, outline = muted border on white, danger = fail border and text on white. */
+  variant?: "primary" | "outline" | "danger";
   /** Stretch to the container width. */
   full?: boolean;
 };

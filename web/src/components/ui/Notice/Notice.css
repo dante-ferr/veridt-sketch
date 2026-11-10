@@ -1,0 +1,8 @@
+.ui-notice {
+  margin: 0;
+  border-radius: 2px;
+  background: var(--color-seal-tint);
+  color: var(--color-ink);
+}
+.ui-notice--sm { padding: 12px; font-size: 13px; font-weight: 500; line-height: 18px; }
+.ui-notice--md { padding: 16px; font-size: 15px; font-weight: 400; line-height: 22px; }
