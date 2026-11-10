@@ -1,7 +1,7 @@
 import { Injectable, type OnModuleDestroy } from '@nestjs/common'
 import type { Channel, ChannelModel, ConsumeMessage } from 'amqplib'
 import amqp from 'amqplib'
-import { captureCancelled, captureCompleted, captureFailed } from '@veridit/events'
+import { captureCancelled, captureCompleted, captureFailed } from '@veridt/events'
 import { z } from 'zod'
 import { Config } from './config'
 import { PaymentsService } from './payments.service'

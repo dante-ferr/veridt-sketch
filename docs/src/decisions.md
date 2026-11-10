@@ -68,6 +68,21 @@ Números de sessão que a ADR-001 não fixa:
 
 A entrada externa é HTTPS em `https://localhost:8443`, com certificado autoassinado gerado na primeira subida. A rede entre os containers do Compose fica em HTTP.
 
+## 6. O produto se chama Veridt
+
+O nome visível é Veridt: interface, e-mails, título do livro e escopo npm `@veridt`.
+
+Estes identificadores internos continuam com a grafia antiga, para não derrubar sessão, volume ou fila já criados:
+
+| Identificador | Valor que permanece |
+| :--- | :--- |
+| Emissor e audiência do JWT | `veridit-identity` e `veridit` |
+| Exchange | `veridit.events` |
+| Projeto do Compose, banco, usuário do Postgres, RabbitMQ e MinIO | `veridit` |
+| Chaves no navegador | `veridit.access`, `veridit.refresh`, `veridit.packageId`, evento `veridit-balance` |
+
+Os nomes de evento das ADRs não mudam. O ponteiro em `docs/references/architecture-repo.txt` continua apontando para o repositório externo.
+
 ## O que ainda está aberto
 
 | Item aberto | Quando se resolve |

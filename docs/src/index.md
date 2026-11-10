@@ -1,4 +1,4 @@
-# Veridit
+# Veridt
 
 Livro de método deste repositório: o que já está decidido, como a fatia atual funciona e o que ainda não começou. O enunciado do produto não é repetido aqui.
 

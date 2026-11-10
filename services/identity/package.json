@@ -1,5 +1,5 @@
 {
-  "name": "@veridit/identity",
+  "name": "@veridt/identity",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,8 +12,8 @@
     "@nestjs/core": "^10.4.15",
     "@nestjs/platform-express": "^10.4.15",
     "@prisma/client": "^6.1.0",
-    "@veridit/auth": "0.1.0",
-    "@veridit/events": "0.1.0",
+    "@veridt/auth": "0.1.0",
+    "@veridt/events": "0.1.0",
     "amqplib": "^0.10.5",
     "argon2": "^0.41.1",
     "jose": "^5.9.6",

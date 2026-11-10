@@ -1,6 +1,7 @@
 import { FormEvent, ReactNode, useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { api, userMessage } from './api'
+import { Wordmark } from './brand'
 import { useSession } from './session'
 
 type CaptureKind = 'screenshot' | 'navigation_video'
@@ -41,7 +42,7 @@ export function Shell({ children }: { children: ReactNode }) {
     <div className="shell">
       <header className="appbar">
         <div className="brand">
-          <Link to="/records">Veridit</Link>
+          <Link className="logo-link" to="/records"><Wordmark /></Link>
           <nav>
             <NavLink to="/records">Registros</NavLink>
             <NavLink to="/records/new">Novo registro</NavLink>
@@ -216,7 +217,7 @@ export function NewRecordPage() {
         <aside className="panel">
           <h2>Como a prova é gerada</h2>
           <ol>
-            <li>Um navegador novo, sem cookies, abre o site no servidor do Veridit.</li>
+            <li>Um navegador novo, sem cookies, abre o site no servidor do Veridt.</li>
             <li>Cada arquivo recebe um hash SHA-256 logo após a captura.</li>
             <li>O manifesto é assinado digitalmente e guardado sem possibilidade de edição.</li>
             <li>Você recebe por e-mail o hash do manifesto ao concluir.</li>
@@ -440,7 +441,7 @@ export function RecordDetailPage() {
               <p>Hash do manifesto SHA-256</p>
               <p><code>{row.manifestHash ?? 'Ainda não assinado'}</code></p>
               <button className="secondary" type="button" onClick={() => void copyHash()}>Copiar</button>
-              <p>{row.signature ? 'Assinatura presente. Confira com a chave pública do Veridit.' : 'Sem assinatura.'}</p>
+              <p>{row.signature ? 'Assinatura presente. Confira com a chave pública do Veridt.' : 'Sem assinatura.'}</p>
               <p className="hint"><Link to="/capture/signing-key">Chave pública</Link></p>
             </section>
           </div>

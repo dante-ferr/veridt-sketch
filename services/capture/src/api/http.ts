@@ -8,7 +8,7 @@ import {
   Param,
   Post,
 } from '@nestjs/common'
-import { remoteJwks, verifyAccessToken, type Access } from '@veridit/auth'
+import { remoteJwks, verifyAccessToken, type Access } from '@veridt/auth'
 import { z } from 'zod'
 import { StartCapture } from '../application/start-capture'
 import { cancelEvents } from '../infrastructure/broker'

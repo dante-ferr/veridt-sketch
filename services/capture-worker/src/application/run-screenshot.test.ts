@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { sha256Hex } from '@veridit/evidence'
+import { sha256Hex } from '@veridt/evidence'
 import { runScreenshot, type ObjectPut, type ScreenshotJob } from './run-screenshot'
 
 const job: ScreenshotJob = {

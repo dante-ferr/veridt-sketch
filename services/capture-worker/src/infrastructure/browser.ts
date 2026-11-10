@@ -1,5 +1,5 @@
 import { lookup } from 'node:dns/promises'
-import { PAGE_LOAD_TIMEOUT_MS } from '@veridit/evidence'
+import { PAGE_LOAD_TIMEOUT_MS } from '@veridt/evidence'
 import type { ObservedPage } from '../application/run-screenshot'
 
 type SecurityDetails = {

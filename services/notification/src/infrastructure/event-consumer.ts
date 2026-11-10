@@ -1,7 +1,7 @@
 import { Injectable, type OnModuleDestroy } from '@nestjs/common'
 import type { Channel, ChannelModel, ConsumeMessage } from 'amqplib'
 import amqp from 'amqplib'
-import { emailEvent } from '@veridit/events'
+import { emailEvent } from '@veridt/events'
 import { buildMessage } from '../domain/message'
 import { Config } from './config'
 import { PrismaService } from './prisma.service'

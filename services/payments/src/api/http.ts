@@ -13,7 +13,7 @@ import {
   Post,
   Req,
 } from '@nestjs/common'
-import { remoteJwks, verifyAccessToken, type Access } from '@veridit/auth'
+import { remoteJwks, verifyAccessToken, type Access } from '@veridt/auth'
 import { z, ZodError } from 'zod'
 import type { Billing } from '../domain/books'
 import { Config } from '../infrastructure/config'

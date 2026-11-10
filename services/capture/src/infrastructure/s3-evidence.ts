@@ -1,6 +1,6 @@
 import { GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { Injectable } from '@nestjs/common'
-import { checksumBase64, checksumHex, sha256Hex } from '@veridit/evidence'
+import { checksumBase64, checksumHex, sha256Hex } from '@veridt/evidence'
 import { EvidenceObjects } from '../application/accept-executed'
 import { Config } from './config'
 

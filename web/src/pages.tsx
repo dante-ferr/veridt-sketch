@@ -1,6 +1,10 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { api, maskCpf, refreshStorageKey, userMessage } from './api'
+import { api, maskCpf, userMessage } from './api'
+import { Wordmark } from './brand'
+import { saveSession } from './session-store'
+import { useSession } from './session'
+import { DevExampleFill, loadDevSamples } from './dev-example'
 
 type Profile = 'lawyer' | 'common_user'
 
@@ -20,8 +24,7 @@ export function LoginPage() {
         method: 'POST',
         body: { email, password },
       })
-      sessionStorage.setItem(refreshStorageKey, tokens.refreshToken)
-      sessionStorage.setItem('veridit.access', tokens.accessToken)
+      saveSession(tokens.accessToken, tokens.refreshToken)
       navigate('/records')
     } catch (caught) {
       setError(userMessage(caught))
@@ -32,7 +35,7 @@ export function LoginPage() {
 
   return (
     <main className="page">
-      <h1>Veridit</h1>
+      <h1 className="brand-lockup"><Wordmark /></h1>
       <p className="subtitle">Registro de evidências digitais com hash, data e hora verificáveis.</p>
       <form className="card" onSubmit={onSubmit}>
         <h2>Entrar</h2>
@@ -101,9 +104,23 @@ export function RegisterPage() {
     }
   }
 
+  async function fillExample() {
+    const samples = await loadDevSamples()
+    if (!samples) return
+    const sample = samples.registrationSample(profile)
+    setFullName(sample.fullName)
+    setEmail(sample.email)
+    setCpf(sample.cpf)
+    setOab(sample.oab)
+    setPassword(sample.password)
+    setPasswordConfirmation(sample.password)
+    setAcceptedTerms(true)
+    setPasswordError(false)
+  }
+
   return (
     <main className="page">
-      <h1>Veridit</h1>
+      <h1 className="brand-lockup"><Wordmark /></h1>
       <form className="card wide" onSubmit={onSubmit} style={{ marginTop: 28 }}>
         {done ? (
           <>
@@ -168,6 +185,7 @@ export function RegisterPage() {
               <input type="checkbox" checked={acceptedTerms} onChange={(event) => setAcceptedTerms(event.target.checked)} />
               <span>Li e aceito os termos de uso e a política de privacidade.</span>
             </label>
+            <DevExampleFill onClick={() => void fillExample()} />
             <div className="row">
               <Link to="/">Já tenho conta</Link>
               <button className="primary" type="submit" disabled={pending}>Criar conta</button>
@@ -200,7 +218,7 @@ export function ForgotPasswordPage() {
 
   return (
     <main className="page">
-      <h1>Veridit</h1>
+      <h1 className="brand-lockup"><Wordmark /></h1>
       <div className="pair">
         <form className="card" onSubmit={onSubmit}>
           <h2>Recuperar senha</h2>
@@ -250,7 +268,7 @@ export function ConfirmEmailPage() {
 
   return (
     <main className="page">
-      <h1>Veridit</h1>
+      <h1 className="brand-lockup"><Wordmark /></h1>
       <section className="card" style={{ marginTop: 28 }}>
         <h2>Confirmação de e-mail</h2>
         <p role="status" className={failed ? 'error' : undefined}>{message}</p>
@@ -290,7 +308,7 @@ export function ResetPasswordPage() {
 
   return (
     <main className="page">
-      <h1>Veridit</h1>
+      <h1 className="brand-lockup"><Wordmark /></h1>
       <form className="card" style={{ marginTop: 28 }} onSubmit={onSubmit}>
         <h2>Nova senha</h2>
         {done ? (
@@ -318,66 +336,18 @@ export function ResetPasswordPage() {
 }
 
 export function HomePage() {
-  const navigate = useNavigate()
-  const [fullName, setFullName] = useState('')
-  const [accessToken, setAccessToken] = useState(sessionStorage.getItem('veridit.access') ?? '')
-  const [pending, setPending] = useState(false)
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    const refreshToken = sessionStorage.getItem(refreshStorageKey)
-    if (!refreshToken) {
-      navigate('/')
-      return
-    }
-    let cancelled = false
-    api<{ accessToken: string }>('/v1/sessions/refresh', { method: 'POST', body: { refreshToken } })
-      .then((tokens) => {
-        if (cancelled) return
-        sessionStorage.setItem('veridit.access', tokens.accessToken)
-        setAccessToken(tokens.accessToken)
-        return api<{ fullName: string }>('/v1/me', { token: tokens.accessToken })
-      })
-      .then((me) => {
-        if (!cancelled && me) setFullName(me.fullName)
-      })
-      .catch(() => {
-        if (cancelled) return
-        sessionStorage.removeItem(refreshStorageKey)
-        sessionStorage.removeItem('veridit.access')
-        navigate('/')
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [navigate])
-
-  async function signOut() {
-    const refreshToken = sessionStorage.getItem(refreshStorageKey)
-    if (!refreshToken || !accessToken) return
-    setPending(true)
-    setError('')
-    try {
-      await api('/v1/sessions/logout', { method: 'POST', token: accessToken, body: { refreshToken } })
-      sessionStorage.removeItem(refreshStorageKey)
-      sessionStorage.removeItem('veridit.access')
-      navigate('/')
-    } catch (caught) {
-      setError(userMessage(caught))
-      setPending(false)
-    }
-  }
+  const session = useSession()
 
   return (
     <main className="page">
       <header className="topbar">
-        <h1>Veridit</h1>
-        <button className="primary" type="button" onClick={() => void signOut()} disabled={pending}>Sair</button>
+        <h1 className="brand-lockup"><Wordmark /></h1>
+        <button className="primary" type="button" onClick={() => void session.signOut()} disabled={session.pending}>Sair</button>
       </header>
       <section className="card">
         <h2>Você entrou</h2>
-        {error ? <p className="alert" role="alert">{error}</p> : null}
-        <p>{fullName ? `Olá, ${fullName}.` : 'Carregando a sessão.'}</p>
+        {session.error ? <p className="alert" role="alert">{session.error}</p> : null}
+        <p>{session.fullName ? `Olá, ${session.fullName}.` : 'Carregando a sessão.'}</p>
       </section>
     </main>
   )

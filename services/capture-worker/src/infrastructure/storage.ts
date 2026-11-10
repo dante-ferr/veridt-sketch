@@ -1,4 +1,4 @@
-import { checksumBase64 } from '@veridit/evidence'
+import { checksumBase64 } from '@veridt/evidence'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import type { ObjectPut } from '../application/run-screenshot'
 

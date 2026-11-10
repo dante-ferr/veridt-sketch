@@ -22,10 +22,19 @@ Onde o código desta fatia fica e o que o Compose sobe.
 
 O domínio não importa Nest, Prisma nem Fastify. Cada serviço usa só o próprio schema: `identity`, `notification`, `capture`, `records` e `payments`.
 
+## Interface local
+
+Dois modos. Os comandos estão no README.
+
+| Modo | Como abrir | **Preencher exemplo** |
+| :--- | :--- | :--- |
+| Compose | `make up`, site em <https://localhost:8443> | Não. A imagem entrega o build de produção (`import.meta.env.DEV` falso). |
+| Vite | `make web-dev` com a stack no ar, <http://localhost:5173> | Sim, em cadastro e faturamento. O Vite encaminha `/v1` para <https://localhost:8443>. |
+
 ## O que sobe
 
 ```bash
-docker compose up --build
+make up
 ```
 
 | Serviço | Papel |

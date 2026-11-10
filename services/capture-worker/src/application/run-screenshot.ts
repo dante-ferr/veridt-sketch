@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import type { WorkerEvent } from '@veridit/events'
+import type { WorkerEvent } from '@veridt/events'
 import {
   canonicalJson,
   clockNeedsAlert,
@@ -9,7 +9,7 @@ import {
   type CaptureMetadata,
   type Manifest,
   type ManifestFile,
-} from '@veridit/evidence'
+} from '@veridt/evidence'
 
 export type ScreenshotJob = {
   recordId: string

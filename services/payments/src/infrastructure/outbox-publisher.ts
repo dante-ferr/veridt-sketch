@@ -1,7 +1,7 @@
 import { Injectable, type OnModuleDestroy, type OnModuleInit } from '@nestjs/common'
 import type { ConfirmChannel, ChannelModel } from 'amqplib'
 import amqp from 'amqplib'
-import { creditReturned, paymentApproved } from '@veridit/events'
+import { creditReturned, paymentApproved } from '@veridt/events'
 import { Config } from './config'
 import { PrismaService } from './prisma.service'
 

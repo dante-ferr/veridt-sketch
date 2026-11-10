@@ -1,6 +1,6 @@
 import { GetObjectCommand, type ServiceInputTypes, type ServiceOutputTypes } from '@aws-sdk/client-s3'
 import { describe, expect, it } from 'vitest'
-import { checksumBase64, sha256Hex } from '@veridit/evidence'
+import { checksumBase64, sha256Hex } from '@veridt/evidence'
 import { Config } from './config'
 import { ObjectStore } from './object-store'
 

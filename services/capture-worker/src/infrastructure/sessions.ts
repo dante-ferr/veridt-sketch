@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { lookup } from 'node:dns/promises'
 import { randomUUID } from 'node:crypto'
-import type { WorkerEvent } from '@veridit/events'
+import type { WorkerEvent } from '@veridt/events'
 import {
   VIDEO_SESSION_LIMIT_MS,
   canonicalJson,
@@ -13,7 +13,7 @@ import {
   sha256Hex,
   type Manifest,
   type ManifestFile,
-} from '@veridit/evidence'
+} from '@veridt/evidence'
 import type { Browser, BrowserContext, Page } from 'playwright'
 import type { WebSocket } from 'ws'
 import type { ObjectPut } from '../application/run-screenshot'

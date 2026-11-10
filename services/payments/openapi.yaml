@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Veridit payments
+  title: Veridt payments
   version: 0.1.0
 paths:
   /v1/credit-packages:

@@ -1,4 +1,4 @@
-import type { EmailEvent } from '@veridit/events'
+import type { EmailEvent } from '@veridt/events'
 
 export type OutboundEmail = {
   to: string
@@ -12,11 +12,11 @@ export function buildMessage(event: EmailEvent, origin: string): OutboundEmail {
     link.searchParams.set('token', event.data.token)
     return {
       to: event.data.email,
-      subject: 'Confirme seu e-mail no Veridit',
+      subject: 'Confirme seu e-mail no Veridt',
       text: [
         `Olá, ${event.data.fullName}.`,
         '',
-        'Confirme seu e-mail para entrar no Veridit. O link é de uso único e vale 24 horas.',
+        'Confirme seu e-mail para entrar no Veridt. O link é de uso único e vale 24 horas.',
         '',
         link.toString(),
       ].join('\n'),
@@ -27,7 +27,7 @@ export function buildMessage(event: EmailEvent, origin: string): OutboundEmail {
     const total = formatBrl(event.data.totalCents)
     return {
       to: event.data.email,
-      subject: 'Pagamento confirmado no Veridit',
+      subject: 'Pagamento confirmado no Veridt',
       text: [
         `Olá, ${event.data.fullName}.`,
         '',
@@ -41,7 +41,7 @@ export function buildMessage(event: EmailEvent, origin: string): OutboundEmail {
   link.searchParams.set('token', event.data.token)
   return {
     to: event.data.email,
-    subject: 'Redefina sua senha no Veridit',
+    subject: 'Redefina sua senha no Veridt',
     text: [
       `Olá, ${event.data.fullName}.`,
       '',
@@ -62,7 +62,7 @@ function formatBrl(cents: number): string {
 export function completionMessage(event: Extract<EmailEvent, { type: 'CapturaConcluida' }>): OutboundEmail {
   return {
     to: event.data.email,
-    subject: 'Captura concluída no Veridit',
+    subject: 'Captura concluída no Veridt',
     text: [
       `Olá, ${event.data.fullName}.`,
       '',
@@ -71,7 +71,7 @@ export function completionMessage(event: Extract<EmailEvent, { type: 'CapturaCon
       '',
       `Hash do manifesto (SHA-256): ${event.data.manifestHash}`,
       '',
-      'Guarde esta mensagem. O hash permite conferir o manifesto fora do Veridit.',
+      'Guarde esta mensagem. O hash permite conferir o manifesto fora do Veridt.',
     ].join('\n'),
   }
 }

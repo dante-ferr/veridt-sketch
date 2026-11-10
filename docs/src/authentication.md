@@ -18,6 +18,8 @@ A identidade assina o access token com Ed25519 e publica a chave em `GET /v1/key
 
 Rotas sem access token: cadastro, confirmação de e-mail, login, renovação, recuperação de senha, redefinição, JWKS, saúde e os contratos OpenAPI. O resto passa pelo gateway só com token válido. A identidade confere de novo nas rotas `GET /v1/me` e `POST /v1/sessions/logout`. A notificação confere em `GET /v1/session`, que o gateway não publica.
 
+O navegador guarda o refresh e o access token na sessão da aba. Ele renova o access token quando o prazo acaba, ou uma vez quando uma rota autenticada responde 401, e então repete o pedido. Várias renovações ao mesmo tempo viram um único `POST /v1/sessions/refresh`. A volta ao login ocorre quando esse refresh responde 401, ou quando o pedido repetido continua em 401. Um 403 permanece na tela. Um 429 na renovação não apaga o refresh: o limite do gateway é 20 pedidos por minuto, e abrir outra página não gasta esse limite enquanto o access token vale.
+
 ## Dados e fila
 
 A conta base fica separada do perfil. O CPF é cifrado na aplicação (AES-256-GCM). A unicidade usa HMAC e não o número em claro. A OAB do advogado também é cifrada. O e-mail fica consultável porque é a chave de login. Log de aplicação não grava CPF, e-mail nem token.
@@ -32,6 +34,7 @@ A identidade grava o evento e o publica na exchange `veridit.events`. A notifica
 | Bloqueio na 5ª falha | `services/identity/src/domain/login.test.ts` |
 | Access token de 15 minutos | `services/identity/src/domain/access-token.test.ts` e `packages/auth/src/verify-access-token.test.ts` |
 | Refresh revogado não renova | `services/identity/src/domain/refresh.test.ts` |
+| 401 autenticado renova uma vez e repete; 403 e 429 não encerram a sessão | `web/src/api.test.ts` |
 | Rotas públicas explícitas | `gateway/src/routes.test.ts` |
 
 Rode com `npm test`.

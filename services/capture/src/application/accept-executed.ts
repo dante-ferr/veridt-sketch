@@ -1,5 +1,5 @@
 import { createPrivateKey, createPublicKey, randomUUID } from 'node:crypto'
-import type { CatalogEvent } from '@veridit/events'
+import type { CatalogEvent } from '@veridt/events'
 import {
   canonicalJson,
   concludeCapture,
@@ -10,7 +10,7 @@ import {
   signManifest,
   verifyManifest,
   type Manifest,
-} from '@veridit/evidence'
+} from '@veridt/evidence'
 import { audit } from './start-capture'
 
 export type StoredCapture = {

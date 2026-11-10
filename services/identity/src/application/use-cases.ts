@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import { Injectable } from '@nestjs/common'
-import { emailConfirmationRequested, passwordResetRequested } from '@veridit/events'
+import { emailConfirmationRequested, passwordResetRequested } from '@veridt/events'
 import { isValidCpf } from '../domain/cpf'
 import { decideLogin } from '../domain/login'
 import {

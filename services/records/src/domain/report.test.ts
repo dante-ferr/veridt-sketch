@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { sha256Hex, type Manifest } from '@veridit/evidence'
+import { sha256Hex, type Manifest } from '@veridt/evidence'
 import { buildReport, packageDecision } from './report'
 
 const manifest: Manifest = {

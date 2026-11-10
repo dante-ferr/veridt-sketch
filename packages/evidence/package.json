@@ -1,5 +1,5 @@
 {
-  "name": "@veridit/evidence",
+  "name": "@veridt/evidence",
   "version": "0.1.0",
   "private": true,
   "main": "./dist/index.js",

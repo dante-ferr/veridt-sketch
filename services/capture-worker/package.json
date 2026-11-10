@@ -1,5 +1,5 @@
 {
-  "name": "@veridit/capture-worker",
+  "name": "@veridt/capture-worker",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.716.0",
-    "@veridit/events": "0.1.0",
-    "@veridit/evidence": "0.1.0",
+    "@veridt/events": "0.1.0",
+    "@veridt/evidence": "0.1.0",
     "amqplib": "^0.10.5",
     "playwright": "1.49.1",
     "ws": "^8.18.0",

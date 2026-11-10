@@ -1,6 +1,6 @@
 import { generateKeyPairSync } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
-import { canonicalJson, manifestHash, sha256Hex, verifyManifest, type Manifest } from '@veridit/evidence'
+import { canonicalJson, manifestHash, sha256Hex, verifyManifest, type Manifest } from '@veridt/evidence'
 import { acceptError, acceptExecuted, EvidenceObjects, type StoredCapture } from './accept-executed'
 
 class MemoryObjects extends EvidenceObjects {

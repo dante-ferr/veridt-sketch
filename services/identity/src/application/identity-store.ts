@@ -1,4 +1,4 @@
-import type { EmailEvent } from '@veridit/events'
+import type { EmailEvent } from '@veridt/events'
 import type { LoginState } from '../domain/login'
 
 export type Profile = 'lawyer' | 'common_user'

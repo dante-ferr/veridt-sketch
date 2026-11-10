@@ -1,3 +1,14 @@
+import {
+  loseSession,
+  readAccessToken,
+  readRefreshToken,
+  refreshStorageKey,
+  singleFlightRefresh,
+  writeAccessToken,
+} from './session-store'
+
+export { refreshStorageKey }
+
 export class ApiError extends Error {
   constructor(
     readonly status: number,
@@ -49,10 +60,13 @@ export function userMessage(error: unknown): string {
   return 'Não foi possível falar com o servidor.'
 }
 
-export async function api<T>(
-  path: string,
-  options: { method?: string; body?: unknown; token?: string } = {},
-): Promise<T> {
+type RequestOptions = { method?: string; body?: unknown; token?: string }
+
+export async function api<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  return request(path, options, false)
+}
+
+async function request<T>(path: string, options: RequestOptions, retried: boolean): Promise<T> {
   const headers: Record<string, string> = {}
   if (options.body !== undefined) headers['content-type'] = 'application/json'
   if (options.token) headers.authorization = `Bearer ${options.token}`
@@ -67,12 +81,51 @@ export async function api<T>(
     throw new ApiError(0, 'unavailable', copy.unavailable ?? '')
   }
   if (response.status === 204) return undefined as T
-  const payload = (await response.json().catch(() => null)) as { error?: string; message?: string } | null
+  const payload = (await response.json().catch(() => null)) as { error?: string; message?: string; accessToken?: string } | null
+  if (response.status === 401 && options.token && !retried) {
+    const next = await refreshAccessToken()
+    return request(path, { ...options, token: next }, true)
+  }
   if (!response.ok) {
+    if (response.status === 401 && retried && readAccessToken() === options.token) loseSession()
     const code = payload?.error ?? 'unavailable'
     throw new ApiError(response.status, code, copy[code] ?? payload?.message ?? 'Não foi possível concluir a operação.')
   }
   return payload as T
+}
+
+export function refreshAccessToken(): Promise<string> {
+  return singleFlightRefresh(performRefresh)
+}
+
+async function performRefresh(): Promise<string> {
+  const refreshToken = readRefreshToken()
+  if (!refreshToken) {
+    loseSession()
+    throw new ApiError(401, 'unauthenticated', copy.unauthenticated ?? '')
+  }
+  let response: Response
+  try {
+    response = await fetch('/v1/sessions/refresh', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ refreshToken }),
+    })
+  } catch {
+    throw new ApiError(0, 'unavailable', copy.unavailable ?? '')
+  }
+  const payload = (await response.json().catch(() => null)) as { accessToken?: string; error?: string; message?: string } | null
+  if (response.status === 401) {
+    loseSession()
+    const code = payload?.error ?? 'unauthenticated'
+    throw new ApiError(response.status, code, copy[code] ?? payload?.message ?? copy.unauthenticated ?? '')
+  }
+  if (!response.ok || !payload?.accessToken) {
+    const code = payload?.error ?? 'unavailable'
+    throw new ApiError(response.status, code, copy[code] ?? payload?.message ?? 'Não foi possível concluir a operação.')
+  }
+  writeAccessToken(payload.accessToken)
+  return payload.accessToken
 }
 
 export function maskCpf(value: string): string {
@@ -84,5 +137,3 @@ export function maskCpf(value: string): string {
   if (parts[3]) masked += `-${parts[3]}`
   return masked
 }
-
-export const refreshStorageKey = 'veridit.refresh'

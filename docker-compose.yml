@@ -74,7 +74,7 @@ services:
       RABBIT_URL: amqp://veridit:${RABBITMQ_PASSWORD:-veridit_local}@rabbitmq:5672
       SMTP_HOST: mailpit
       SMTP_PORT: "1025"
-      SMTP_FROM: Veridit <no-reply@localhost>
+      SMTP_FROM: Veridt <no-reply@localhost>
       PUBLIC_WEB_ORIGIN: https://localhost:8443
       JWKS_URL: http://identity:3000/v1/keys/jwks
       JWT_ISSUER: veridit-identity

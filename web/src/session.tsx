@@ -1,57 +1,74 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useSyncExternalStore } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { api, refreshStorageKey, userMessage } from './api'
+import { api, ApiError, refreshAccessToken, userMessage } from './api'
+import {
+  accessTokenExpired,
+  getSnapshot,
+  loseSession,
+  onSessionLost,
+  readAccessToken,
+  readRefreshToken,
+  setFullName,
+  setSessionError,
+  setSessionPending,
+  subscribe,
+} from './session-store'
 
 export function useSession() {
   const navigate = useNavigate()
-  const [accessToken, setAccessToken] = useState(sessionStorage.getItem('veridit.access') ?? '')
-  const [fullName, setFullName] = useState('')
-  const [pending, setPending] = useState(false)
-  const [error, setError] = useState('')
+  const session = useSyncExternalStore(subscribe, getSnapshot, getSnapshot)
 
   useEffect(() => {
-    const refreshToken = sessionStorage.getItem(refreshStorageKey)
-    if (!refreshToken) {
-      navigate('/')
-      return
-    }
     let cancelled = false
-    api<{ accessToken: string }>('/v1/sessions/refresh', { method: 'POST', body: { refreshToken } })
-      .then((tokens) => {
-        if (cancelled) return
-        sessionStorage.setItem('veridit.access', tokens.accessToken)
-        setAccessToken(tokens.accessToken)
-        return api<{ fullName: string }>('/v1/me', { token: tokens.accessToken })
+    const unsubscribe = onSessionLost(() => {
+      if (!cancelled) navigate('/')
+    })
+    if (!readRefreshToken()) {
+      navigate('/')
+      return () => {
+        cancelled = true
+        unsubscribe()
+      }
+    }
+    const current = readAccessToken()
+    const ready = current && !accessTokenExpired(current) ? Promise.resolve(current) : refreshAccessToken()
+    ready
+      .then((access) => {
+        if (cancelled) return null
+        return api<{ fullName: string }>('/v1/me', { token: access })
       })
       .then((me) => {
         if (!cancelled && me) setFullName(me.fullName)
       })
-      .catch(() => {
+      .catch((error: unknown) => {
         if (cancelled) return
-        sessionStorage.removeItem(refreshStorageKey)
-        sessionStorage.removeItem('veridit.access')
-        navigate('/')
+        if (error instanceof ApiError && error.status === 401) navigate('/')
       })
     return () => {
       cancelled = true
+      unsubscribe()
     }
   }, [navigate])
 
   async function signOut() {
-    const refreshToken = sessionStorage.getItem(refreshStorageKey)
-    if (!refreshToken || !accessToken) return
-    setPending(true)
-    setError('')
+    const refreshToken = readRefreshToken()
+    const accessToken = getSnapshot().accessToken
+    if (!refreshToken || !accessToken) {
+      loseSession()
+      return
+    }
+    setSessionPending(true)
     try {
       await api('/v1/sessions/logout', { method: 'POST', token: accessToken, body: { refreshToken } })
-      sessionStorage.removeItem(refreshStorageKey)
-      sessionStorage.removeItem('veridit.access')
-      navigate('/')
+      loseSession()
     } catch (caught) {
-      setError(userMessage(caught))
-      setPending(false)
+      if (caught instanceof ApiError && caught.status === 401) {
+        loseSession()
+        return
+      }
+      setSessionError(userMessage(caught))
     }
   }
 
-  return { accessToken, fullName, pending, error, signOut }
+  return { ...session, signOut }
 }

@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import { Injectable } from '@nestjs/common'
-import type { CatalogEvent } from '@veridit/events'
+import type { CatalogEvent } from '@veridt/events'
 import { Prisma } from '../../generated/client'
 import type { CaptureDraft } from '../application/start-capture'
 import { CaptureStore } from '../application/start-capture'

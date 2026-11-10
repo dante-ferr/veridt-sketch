@@ -1,4 +1,4 @@
-// Keep ACCESS_TOKEN_TTL_SECONDS aligned with MAX_ACCESS_TOKEN_TTL_SECONDS in @veridit/auth.
+// Keep ACCESS_TOKEN_TTL_SECONDS aligned with MAX_ACCESS_TOKEN_TTL_SECONDS in @veridt/auth.
 export const FAILURES_BEFORE_LOCK = 5
 export const LOCK_MS = 15 * 60 * 1000
 export const ACCESS_TOKEN_TTL_SECONDS = 15 * 60

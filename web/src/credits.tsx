@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { api, maskCpf, userMessage } from './api'
+import { DevExampleFill, loadDevSamples } from './dev-example'
 import { Shell } from './evidence'
 import { useSession } from './session'
 
@@ -181,6 +182,23 @@ export function BillingPage() {
     }
   }
 
+  async function fillExample() {
+    const samples = await loadDevSamples()
+    if (!samples) return
+    const sample = samples.billingSample()
+    setFullName(sample.fullName)
+    setEmail(sample.email)
+    setPhone(sample.phone)
+    setCpf(sample.cpf)
+    setPostalCode(sample.postalCode)
+    setStreet(sample.street)
+    setNumber(sample.number)
+    setComplement(sample.complement)
+    setDistrict(sample.district)
+    setCity(sample.city)
+    setState(sample.state)
+  }
+
   return (
     <Shell>
       <h2>Dados de faturamento</h2>
@@ -210,6 +228,7 @@ export function BillingPage() {
             <label>Cidade<input value={city} onChange={(event) => setCity(event.target.value)} required /></label>
             <label>Estado<input value={state} onChange={(event) => setState(event.target.value.toUpperCase().slice(0, 2))} required /></label>
           </div>
+          <DevExampleFill onClick={() => void fillExample()} />
           <div className="row">
             <Link to="/credits">Trocar pacote</Link>
             <button className="primary" type="submit" disabled={pending || !offer}>Ir para o pagamento</button>
@@ -333,7 +352,7 @@ export function PaymentPage() {
               </>
             ) : (
               <>
-                <p>Você será levado ao checkout do Mercado Pago e voltará ao Veridit ao final. O saldo só muda depois da consulta ao provedor.</p>
+                <p>Você será levado ao checkout do Mercado Pago e voltará ao Veridt ao final. O saldo só muda depois da consulta ao provedor.</p>
                 <p><a className="button" href={order.checkoutUrl}>Pagar com Mercado Pago</a></p>
                 {order.testConfirmation && order.state === 'PENDENTE' ? (
                   <button className="secondary" type="button" disabled={pending} onClick={() => void confirmTest()}>Confirmar pagamento de teste</button>

@@ -1,7 +1,7 @@
 import { zipSync, strToU8 } from 'fflate'
 import { randomUUID } from 'node:crypto'
-import type { AuditAction } from '@veridit/events'
-import { canonicalJson, manifestHash, sha256Hex, verifyManifest, type Manifest } from '@veridit/evidence'
+import type { AuditAction } from '@veridt/events'
+import { canonicalJson, manifestHash, sha256Hex, verifyManifest, type Manifest } from '@veridt/evidence'
 import { buildReport, packageDecision, type EvidenceReport, type ReportProfile } from '../domain/report'
 
 export type ViewRecord = {

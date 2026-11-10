@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { EmailEvent } from '@veridit/events'
+import type { EmailEvent } from '@veridt/events'
 import { buildMessage } from './message'
 
 describe('completion email', () => {
@@ -23,7 +23,7 @@ describe('completion email', () => {
       },
     }
     const message = buildMessage(event, 'https://localhost:8443')
-    expect(message.subject).toBe('Captura concluída no Veridit')
+    expect(message.subject).toBe('Captura concluída no Veridt')
     expect(message.text).toContain(`Hash do manifesto (SHA-256): ${hash}`)
   })
 
@@ -44,7 +44,7 @@ describe('completion email', () => {
       },
     }
     const message = buildMessage(event, 'https://localhost:8443')
-    expect(message.subject).toBe('Pagamento confirmado no Veridit')
+    expect(message.subject).toBe('Pagamento confirmado no Veridt')
     expect(message.text).toContain('30 créditos entraram no saldo.')
     expect(message.to).toBe('ana@example.com')
   })

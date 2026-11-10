@@ -1,7 +1,7 @@
 import httpProxy from 'http-proxy'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
-import { remoteJwks, verifyAccessToken } from '@veridit/auth'
+import { remoteJwks, verifyAccessToken } from '@veridt/auth'
 import Fastify, { type FastifyReply, type FastifyRequest } from 'fastify'
 import { classifyRoute, isRateLimited, tooManyAttempts, upstreamFor } from './routes'
 

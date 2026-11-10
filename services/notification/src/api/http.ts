@@ -1,5 +1,5 @@
 import { Controller, Get, Headers, HttpCode, HttpException, Injectable } from '@nestjs/common'
-import { remoteJwks, verifyAccessToken } from '@veridit/auth'
+import { remoteJwks, verifyAccessToken } from '@veridt/auth'
 import { Config } from '../infrastructure/config'
 
 @Injectable()

@@ -1,8 +1,8 @@
 import { createPublicKey, randomUUID } from 'node:crypto'
 import { Injectable, type OnModuleInit } from '@nestjs/common'
 import { Prisma, type Account } from '../../generated/client'
-import type { EmailEvent } from '@veridit/events'
-import { verifyAccessToken } from '@veridit/auth'
+import type { EmailEvent } from '@veridt/events'
+import { verifyAccessToken } from '@veridt/auth'
 import argon2 from 'argon2'
 import { exportJWK, importPKCS8, importSPKI, SignJWT, type JWK } from 'jose'
 import {

@@ -17,7 +17,7 @@ export class Config {
       required('RABBIT_URL'),
       process.env.SMTP_HOST ?? 'mailpit',
       Number(process.env.SMTP_PORT ?? '1025'),
-      process.env.SMTP_FROM ?? 'Veridit <no-reply@localhost>',
+      process.env.SMTP_FROM ?? 'Veridt <no-reply@localhost>',
       required('PUBLIC_WEB_ORIGIN'),
       required('JWKS_URL'),
       process.env.JWT_ISSUER ?? 'veridit-identity',

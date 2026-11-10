@@ -1,5 +1,5 @@
 {
-  "name": "@veridit/gateway",
+  "name": "@veridt/gateway",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,7 +8,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@veridit/auth": "0.1.0",
+    "@veridt/auth": "0.1.0",
     "fastify": "^5.2.1",
     "http-proxy": "^1.18.1"
   },

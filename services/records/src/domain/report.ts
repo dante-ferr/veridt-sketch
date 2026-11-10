@@ -1,4 +1,4 @@
-import { canPackageEvidence, type Manifest, type RecordState } from '@veridit/evidence'
+import { canPackageEvidence, type Manifest, type RecordState } from '@veridt/evidence'
 
 export type ReportProfile = {
   fullName: string

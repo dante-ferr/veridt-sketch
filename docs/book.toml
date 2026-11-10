@@ -2,7 +2,7 @@
 authors = ["dante-ferr"]
 language = "pt"
 src = "src"
-title = "Veridit"
+title = "Veridt"
 
 [output.html]
 git-repository-url = "https://github.com/dante-ferr/veridt"
