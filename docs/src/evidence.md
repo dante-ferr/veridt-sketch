@@ -12,6 +12,7 @@ Este capítulo descreve a captura no servidor, o manifesto assinado, o storage i
 6. O worker calcula o SHA-256, grava os arquivos e o manifesto no MinIO e publica `CapturaExecutada`. Ele não assina.
 7. A API confere o hash do manifesto e o checksum de cada arquivo no storage. Se bater, assina, marca `CONCLUIDO` e publica `CapturaConcluida`. Se não bater, marca `FALHOU` e não assina.
 8. Falha de carga publica `CapturaComErro`. A captura não é refeita. O usuário pode cancelar `NA_FILA` ou `EM_ANDAMENTO`, e o estado vai para `CANCELADO`.
+   No vídeo, a conexão perdida também interrompe a gravação (ADR-005): sem nenhuma tela conectada à sessão pelo prazo da tabela abaixo, o worker publica `CapturaComErro` com `connection_lost`, o registro vai para `FALHOU` e o crédito volta. Um F5 ou uma queda curta dentro do prazo não interrompe.
 9. A notificação manda o hash do manifesto no e-mail de `CapturaConcluida`.
 10. Registros e Relatórios lista, mostra o detalhe e, só para `CONCLUIDO`, gera relatório e zip com manifesto, assinatura e hashes. O link de download vale 5 minutos e entra na trilha.
 
@@ -32,6 +33,7 @@ A chave pública fica em `GET /v1/capture/signing-key`. A chave privada fica no 
 | Assinatura só com checksum igual; falha não repete | `services/capture/src/application/accept-executed.test.ts` |
 | Worker faz hash antes do upload e não assina | `services/capture-worker/src/application/run-screenshot.test.ts` |
 | Worker não cita a chave de assinatura | `services/capture-worker/src/domain/worker-boundary.test.ts` |
+| Sessão de vídeo falha após 30 s sem tela conectada; F5 dentro do prazo não interrompe | `services/capture-worker/src/domain/disconnect-watch.test.ts` |
 | Alerta de relógio a partir de 1 segundo | `packages/evidence/src/manifest.test.ts` e `services/capture-worker/src/domain/ntp.test.ts` |
 | E-mail de conclusão traz o hash | `services/notification/src/domain/message.test.ts` |
 | Relatório só de registro `CONCLUIDO` | `services/records/src/domain/report.test.ts` e `services/records/src/application/package-evidence.test.ts` |
@@ -47,6 +49,7 @@ Rode com `npm test`.
 | Alerta de relógio | 1 segundo, ou NTP inacessível |
 | Tempo de carga da página | 30 segundos; depois disso a captura falha |
 | Sessão de vídeo | 15 minutos |
+| Sessão de vídeo sem tela conectada | 30 segundos; depois disso a gravação falha com `connection_lost` |
 | Link de download | 5 minutos |
 | Página da listagem | 5 registros |
 

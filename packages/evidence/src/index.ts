@@ -7,6 +7,8 @@ export type CaptureKind = 'screenshot' | 'navigation_video'
 export const CLOCK_ALERT_MS = 1000
 export const DOWNLOAD_LINK_TTL_SECONDS = 5 * 60
 export const VIDEO_SESSION_LIMIT_MS = 15 * 60 * 1000
+/** A video session with no screen connected for this long fails with connection_lost (ADR-005). */
+export const VIDEO_SESSION_DISCONNECT_GRACE_MS = 30_000
 export const PAGE_LOAD_TIMEOUT_MS = 30_000
 
 export type ManifestFile = {

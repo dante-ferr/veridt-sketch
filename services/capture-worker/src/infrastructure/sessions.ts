@@ -5,6 +5,7 @@ import { lookup } from 'node:dns/promises'
 import { randomUUID } from 'node:crypto'
 import type { WorkerEvent } from '@veridt/events'
 import {
+  VIDEO_SESSION_DISCONNECT_GRACE_MS,
   VIDEO_SESSION_LIMIT_MS,
   canonicalJson,
   isPublicHttpUrl,
@@ -17,6 +18,7 @@ import {
 import type { Browser, BrowserContext, Page } from 'playwright'
 import type { WebSocket } from 'ws'
 import type { ObjectPut } from '../application/run-screenshot'
+import { DisconnectWatch } from '../domain/disconnect-watch'
 
 export type SessionOpen = {
   recordId: string
@@ -39,6 +41,8 @@ type LiveSession = {
   sockets: Set<WebSocket>
   timer: NodeJS.Timeout
   frame: NodeJS.Timeout
+  watch: DisconnectWatch
+  scroll: { dx: number; dy: number; timer: NodeJS.Timeout | null }
   closed: boolean
   url: string
   browserVersion: string
@@ -85,6 +89,11 @@ export class SessionHub {
       frame: setInterval(() => {
         this.pushFrame(id).catch(() => undefined)
       }, 1000),
+      // ADR-005: with no screen connected for the grace period, the capture is interrupted.
+      watch: new DisconnectWatch(VIDEO_SESSION_DISCONNECT_GRACE_MS, () => {
+        this.fail(id, 'connection_lost').catch(() => undefined)
+      }),
+      scroll: { dx: 0, dy: 0, timer: null },
       closed: false,
       url: page.url(),
       browserVersion: browser.version(),
@@ -108,6 +117,7 @@ export class SessionHub {
     session.closed = true
     clearTimeout(session.timer)
     clearInterval(session.frame)
+    session.watch.stop()
     await this.snapshot(session, `shot-${String(session.shots.length + 1).padStart(2, '0')}`)
     const video = session.page.video()
     await session.context.close()
@@ -129,21 +139,33 @@ export class SessionHub {
       return
     }
     session.sockets.add(socket)
+    session.watch.connected()
     socket.on('message', (raw) => {
       this.onCommand(session, raw.toString()).catch(() => undefined)
     })
-    socket.on('close', () => session.sockets.delete(socket))
+    socket.on('close', () => {
+      session.sockets.delete(socket)
+      session.watch.disconnected()
+    })
   }
 
   private async onCommand(session: LiveSession, raw: string): Promise<void> {
     if (session.closed) return
-    const command = JSON.parse(raw) as { type?: string; x?: number; y?: number; key?: string; url?: string }
+    const command = JSON.parse(raw) as { type?: string; x?: number; y?: number; dx?: number; dy?: number; key?: string; url?: string }
     if (command.type === 'click' && Number.isFinite(command.x) && Number.isFinite(command.y)) {
       await session.page.mouse.click(command.x ?? 0, command.y ?? 0)
       await this.publishAudit({ input: 'click', x: String(command.x), y: String(command.y) }, session.input)
     } else if (command.type === 'key' && command.key && command.key.length <= 20) {
-      await session.page.keyboard.press(command.key)
+      // A single character is typed as text so accented letters (á, ç, ã) work;
+      // named keys and shortcuts (Enter, Backspace, Control+a) are pressed.
+      if ([...command.key].length === 1) await session.page.keyboard.type(command.key)
+      else await session.page.keyboard.press(command.key)
       await this.publishAudit({ input: 'key', key: command.key }, session.input)
+    } else if (command.type === 'scroll' && Number.isFinite(command.dx) && Number.isFinite(command.dy)) {
+      const dx = clamp(command.dx ?? 0, -2000, 2000)
+      const dy = clamp(command.dy ?? 0, -2000, 2000)
+      await session.page.mouse.wheel(dx, dy)
+      this.recordScroll(session, dx, dy)
     } else if (command.type === 'navigate' && command.url && isPublicHttpUrl(command.url)) {
       const answers = await lookup(new URL(command.url).hostname, { all: true })
       if (answers.some((item) => !isPublicIp(item.address))) return
@@ -158,6 +180,18 @@ export class SessionHub {
       await session.page.reload({ timeout: 30_000 })
       await this.publishAudit({ input: 'reload' }, session.input)
     }
+  }
+
+  /** One audit entry per scroll gesture (when the wheel stops), not one per wheel tick. */
+  private recordScroll(session: LiveSession, dx: number, dy: number): void {
+    session.scroll.dx += dx
+    session.scroll.dy += dy
+    if (session.scroll.timer) clearTimeout(session.scroll.timer)
+    session.scroll.timer = setTimeout(() => {
+      const detail = { input: 'scroll', dx: String(Math.round(session.scroll.dx)), dy: String(Math.round(session.scroll.dy)) }
+      session.scroll = { dx: 0, dy: 0, timer: null }
+      this.publishAudit(detail, session.input).catch(() => undefined)
+    }, 800)
   }
 
   private async pushFrame(id: string): Promise<void> {
@@ -241,6 +275,8 @@ export class SessionHub {
     session.closed = true
     clearTimeout(session.timer)
     clearInterval(session.frame)
+    session.watch.stop()
+    if (session.scroll.timer) clearTimeout(session.scroll.timer)
     this.sessions.delete(session.id)
     await session.context.close().catch(() => undefined)
     await session.browser.close().catch(() => undefined)
@@ -250,6 +286,10 @@ export class SessionHub {
 
 function named(name: string, mediaType: string, body: Buffer, storageKey: string): ManifestFile {
   return { name, mediaType, byteSize: body.length, sha256: sha256Hex(body), storageKey }
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value))
 }
 
 function errorEvent(session: LiveSession, reason: string): WorkerEvent {
