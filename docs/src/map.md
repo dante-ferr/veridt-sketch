@@ -6,20 +6,21 @@ Onde o código desta fatia fica e o que o Compose sobe.
 
 | Caminho | Função |
 | :--- | :--- |
-| `services/capture` | Registro, estado, assinatura do manifesto e a porta de crédito bloqueada |
+| `services/payments` | Pacotes, pedidos, livro-razão, webhook, reconciliação e reserva |
+| `services/capture` | Registro, estado, assinatura do manifesto e a chamada de reserva |
 | `services/capture-worker` | Chromium, hash, upload e sessão de vídeo. Sem banco e sem chave de assinatura |
 | `services/records` | Listagem, detalhe, relatório, zip e trilha só de inclusão |
 | `services/identity` | Cadastro, sessão, senha, JWKS e leitura interna de contato e CPF para o relatório |
-| `services/notification` | E-mails de conta e o e-mail com o hash do manifesto |
+| `services/notification` | E-mails de conta, de pagamento aprovado e o e-mail com o hash do manifesto |
 | `gateway` | Rotas, access token e proxy da sessão de vídeo |
-| `web` | Entrada, registros, novo registro, acompanhamento e detalhe |
+| `web` | Entrada, registros, novo registro, créditos, acompanhamento e detalhe |
 | `packages/auth` | Validação do access token compartilhada |
 | `packages/evidence` | Hash, manifesto, assinatura e estados |
 | `packages/events` | Contratos dos eventos, inclusive os nomes da ADR |
 | `infra` | Schemas do Postgres, proxy TLS e políticas do MinIO |
 | `docs` | Este livro |
 
-O domínio não importa Nest, Prisma nem Fastify. Cada serviço usa só o próprio schema: `identity`, `notification`, `capture` e `records`.
+O domínio não importa Nest, Prisma nem Fastify. Cada serviço usa só o próprio schema: `identity`, `notification`, `capture`, `records` e `payments`.
 
 ## O que sobe
 
@@ -35,6 +36,7 @@ docker compose up --build
 | `minio` | Object storage S3, imagens públicas `bitnamilegacy/minio` e `bitnamilegacy/minio-client`. API em <http://localhost:9000> |
 | `identity` | Serviço de identidade |
 | `notification` | Serviço de notificação |
+| `payments` | Créditos, pedidos e o adaptador de pagamento |
 | `capture` | API de captura e assinatura |
 | `capture-worker` | Navegador de captura, sem porta publicada |
 | `records` | Registros, relatório e trilha |
@@ -42,6 +44,6 @@ docker compose up --build
 | `web` | Interface |
 | `proxy` | HTTPS em <https://localhost:8443> |
 
-Os contratos OpenAPI ficam em cada serviço. O gateway os entrega em `/v1/openapi/identity`, `/v1/openapi/notification`, `/v1/openapi/capture` e `/v1/openapi/records`.
+Os contratos OpenAPI ficam em cada serviço. O gateway os entrega em `/v1/openapi/identity`, `/v1/openapi/notification`, `/v1/openapi/capture`, `/v1/openapi/records` e `/v1/openapi/payments`.
 
-Se o volume do Postgres já existia antes desta fatia, o serviço `schema-init` cria os schemas `capture` e `records` na subida.
+Se o volume do Postgres já existia antes desta fatia, o serviço `schema-init` cria os schemas que faltam, inclusive `payments`, na subida.

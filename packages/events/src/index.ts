@@ -42,10 +42,35 @@ export const captureCompleted = z.object({
   }),
 })
 
+export const paymentApproved = z.object({
+  type: z.literal('PagamentoAprovado'),
+  ...envelope,
+  data: z.object({
+    orderId: z.string().uuid(),
+    accountId: z.string().uuid(),
+    fullName: z.string().min(1),
+    email: z.string().email(),
+    packageName: z.string().min(1),
+    creditCount: z.number().int().positive(),
+    totalCents: z.number().int().nonnegative(),
+  }),
+})
+
+export const creditReturned = z.object({
+  type: z.literal('CreditoDevolvido'),
+  ...envelope,
+  data: z.object({
+    recordId: z.string().uuid(),
+    accountId: z.string().uuid(),
+    credits: z.number().int().positive(),
+  }),
+})
+
 export const emailEvent = z.discriminatedUnion('type', [
   emailConfirmationRequested,
   passwordResetRequested,
   captureCompleted,
+  paymentApproved,
 ])
 
 export type EmailEvent = z.infer<typeof emailEvent>

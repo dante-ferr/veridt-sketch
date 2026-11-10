@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common'
 import type { AuditAction, CatalogEvent } from '@veridit/events'
 import type { CaptureKind } from '@veridit/evidence'
 import { initialState, isPublicHttpUrl } from '@veridit/evidence'
-import { CreditReservationPort } from './credit-reservation'
+import { creditsPerRecord, CreditReservationPort, type CreditBlockReason } from './credit-reservation'
 import type { Result } from './result'
 import { fail, ok } from './result'
 
@@ -84,10 +84,11 @@ export class StartCapture {
       captureKind: 'screenshot',
       phase: 'before_screenshot_enqueue',
     })
-    if (reservation.outcome === 'blocked') return blocked()
+    if (reservation.outcome === 'blocked') return blocked(reservation.reason)
     const now = this.now()
     const publicId = await this.store.nextPublicId(now)
-    await this.store.save({
+    try {
+      await this.store.save({
       ...this.base(input, id, publicId, traceId, title, now),
       events: [
         recordCreated(now, {
@@ -107,6 +108,10 @@ export class StartCapture {
         }),
       ],
     })
+    } catch (error) {
+      await this.credits.release(id)
+      throw error
+    }
     return ok({ id, publicId, state: initialState('screenshot'), sessionId: null })
   }
 
@@ -127,10 +132,11 @@ export class StartCapture {
     })
     if (reservation.outcome === 'blocked') {
       await this.sessions.discard(session.sessionId)
-      return blocked()
+      return blocked(reservation.reason)
     }
     const publicId = await this.store.nextPublicId(now)
-    await this.store.save({
+    try {
+      await this.store.save({
       ...this.base(input, id, publicId, traceId, title, now),
       sessionId: session.sessionId,
       events: [
@@ -151,6 +157,11 @@ export class StartCapture {
         }),
       ],
     })
+    } catch (error) {
+      await this.sessions.discard(session.sessionId)
+      await this.credits.release(id)
+      throw error
+    }
     return ok({ id, publicId, state: initialState('navigation_video'), sessionId: session.sessionId })
   }
 
@@ -171,7 +182,17 @@ export class StartCapture {
   }
 }
 
-function blocked(): Result<never> {
+function blocked(reason: CreditBlockReason): Result<never> {
+  if (reason === 'insufficient_credits') {
+    return fail(
+      'insufficient_credits',
+      `This record needs ${creditsPerRecord} credit. Buy credits or settle a negative balance.`,
+      409,
+    )
+  }
+  if (reason === 'credits_unavailable') {
+    return fail('credits_unavailable', 'The credits service is unavailable. The capture did not start.', 503)
+  }
   return fail(
     'credit_reservation_blocked',
     'Credit reservation is blocked until ADR-003. The capture did not start.',

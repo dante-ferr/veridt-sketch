@@ -13,7 +13,13 @@ const routes: Record<string, RouteClass> = {
   'GET /v1/openapi/notification': 'public',
   'GET /v1/openapi/capture': 'public',
   'GET /v1/openapi/records': 'public',
+  'GET /v1/openapi/payments': 'public',
   'GET /v1/capture/signing-key': 'public',
+  'POST /v1/payments/webhooks/mercadopago': 'public',
+  'GET /v1/credit-packages': 'protected',
+  'GET /v1/credits/balance': 'protected',
+  'GET /v1/credit-orders': 'protected',
+  'POST /v1/credit-orders': 'protected',
   'POST /v1/captures': 'protected',
   'GET /v1/records': 'protected',
   'GET /v1/me': 'protected',
@@ -26,17 +32,28 @@ export function classifyRoute(method: string, path: string): RouteClass {
   if (exact) return exact
   if (method === 'GET' && /^\/v1\/captures\/[0-9a-f-]{36}$/.test(clean)) return 'protected'
   if (method === 'POST' && /^\/v1\/captures\/[0-9a-f-]{36}\/(cancel|conclude)$/.test(clean)) return 'protected'
+  if (method === 'GET' && /^\/v1\/credit-orders\/[0-9a-f-]{36}$/.test(clean)) return 'protected'
+  if (method === 'POST' && /^\/v1\/credit-orders\/[0-9a-f-]{36}\/test-payment$/.test(clean)) return 'protected'
   if (method === 'GET' && /^\/v1\/records\/[0-9a-f-]{36}$/.test(clean)) return 'protected'
   if (method === 'POST' && /^\/v1\/records\/[0-9a-f-]{36}\/(downloads|purge)$/.test(clean)) return 'protected'
   return 'missing'
 }
 
-export function upstreamFor(path: string): 'identity' | 'capture' | 'records' {
+export function upstreamFor(path: string): 'identity' | 'capture' | 'records' | 'payments' {
   const clean = path.split('?')[0] ?? path
   if (clean.startsWith('/v1/captures') || clean.startsWith('/v1/capture/') || clean === '/v1/openapi/capture') {
     return 'capture'
   }
   if (clean.startsWith('/v1/records') || clean === '/v1/openapi/records') return 'records'
+  if (
+    clean.startsWith('/v1/credit-packages') ||
+    clean.startsWith('/v1/credit-orders') ||
+    clean.startsWith('/v1/credits') ||
+    clean.startsWith('/v1/payments/') ||
+    clean === '/v1/openapi/payments'
+  ) {
+    return 'payments'
+  }
   return 'identity'
 }
 

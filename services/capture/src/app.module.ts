@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { CreditReservationPort, BlockedCreditReservation } from './application/credit-reservation'
+import { CreditReservationPort } from './application/credit-reservation'
 import { CaptureStore, StartCapture, VideoSessionPort } from './application/start-capture'
 import {
   CapturesController,
@@ -8,6 +8,7 @@ import {
   SigningKeyController,
 } from './api/http'
 import { CaptureBroker } from './infrastructure/broker'
+import { HttpCreditReservation } from './infrastructure/http-credits'
 import { IdentityDirectory, WorkerVideoSessions } from './infrastructure/clients'
 import { Config } from './infrastructure/config'
 import { ManifestSigner } from './infrastructure/manifest-signer'
@@ -27,7 +28,7 @@ import { S3EvidenceObjects } from './infrastructure/s3-evidence'
     IdentityDirectory,
     WorkerVideoSessions,
     { provide: VideoSessionPort, useExisting: WorkerVideoSessions },
-    { provide: CreditReservationPort, useClass: BlockedCreditReservation },
+    { provide: CreditReservationPort, useClass: HttpCreditReservation },
     StartCapture,
     CaptureBroker,
   ],

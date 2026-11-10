@@ -8,6 +8,7 @@ import { classifyRoute, isRateLimited, tooManyAttempts, upstreamFor } from './ro
 const identityUrl = required('IDENTITY_URL')
 const captureUrl = required('CAPTURE_URL')
 const recordsUrl = required('RECORDS_URL')
+const paymentsUrl = required('PAYMENTS_URL')
 const workerUrl = required('CAPTURE_WORKER_URL')
 const jwksUrl = required('JWKS_URL')
 const issuer = process.env.JWT_ISSUER ?? 'veridit-identity'
@@ -19,6 +20,20 @@ const openApiRoot = path.resolve(__dirname, '../..')
 
 async function main(): Promise<void> {
   const app = Fastify({ logger: false, bodyLimit: 65_536 })
+  app.removeContentTypeParser('application/json')
+  app.addContentTypeParser('application/json', { parseAs: 'buffer' }, (request, body, done) => {
+    const raw = body.toString('utf8')
+    ;(request as { rawBody?: string }).rawBody = raw
+    if (!raw) {
+      done(null, {})
+      return
+    }
+    try {
+      done(null, JSON.parse(raw) as unknown)
+    } catch (error) {
+      done(error as Error, undefined)
+    }
+  })
   app.addHook('onResponse', (request, reply, done) => {
     console.log(
       JSON.stringify({
@@ -102,21 +117,35 @@ async function handle(request: FastifyRequest, reply: FastifyReply): Promise<voi
     reply.type('application/yaml').send(readFileSync(path.join(openApiRoot, 'services/records/openapi.yaml')))
     return
   }
+  if (pathOnly === '/v1/openapi/payments') {
+    reply.type('application/yaml').send(readFileSync(path.join(openApiRoot, 'services/payments/openapi.yaml')))
+    return
+  }
   await proxy(request, reply, upstreamFor(pathOnly))
 }
 
-async function proxy(request: FastifyRequest, reply: FastifyReply, upstreamName: 'identity' | 'capture' | 'records'): Promise<void> {
-  const base = upstreamName === 'capture' ? captureUrl : upstreamName === 'records' ? recordsUrl : identityUrl
+async function proxy(request: FastifyRequest, reply: FastifyReply, upstreamName: 'identity' | 'capture' | 'records' | 'payments'): Promise<void> {
+  const base = upstreamName === 'capture'
+    ? captureUrl
+    : upstreamName === 'records'
+      ? recordsUrl
+      : upstreamName === 'payments'
+        ? paymentsUrl
+        : identityUrl
   const headers = new Headers()
   const contentType = request.headers['content-type']
   if (typeof contentType === 'string') headers.set('content-type', contentType)
   if (typeof request.headers.authorization === 'string') headers.set('authorization', request.headers.authorization)
+  const signature = request.headers['x-webhook-signature']
+  if (typeof signature === 'string') headers.set('x-webhook-signature', signature)
+  const pathOnly = request.url.split('?')[0] ?? request.url
   const hasBody = request.method !== 'GET' && request.method !== 'HEAD'
+  const rawBody = (request as { rawBody?: string }).rawBody ?? (request.raw as { rawBody?: string }).rawBody
   try {
     const upstream = await fetch(new URL(request.url, base), {
       method: request.method,
       headers,
-      body: hasBody ? JSON.stringify(request.body ?? {}) : undefined,
+      body: hasBody ? (pathOnly === '/v1/payments/webhooks/mercadopago' ? rawBody ?? '' : JSON.stringify(request.body ?? {})) : undefined,
     })
     reply.status(upstream.status)
     const type = upstream.headers.get('content-type')

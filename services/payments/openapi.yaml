@@ -1,0 +1,73 @@
+openapi: 3.0.3
+info:
+  title: Veridit payments
+  version: 0.1.0
+paths:
+  /v1/credit-packages:
+    get:
+      summary: List active credit packages
+      responses:
+        '200':
+          description: Packages with the current price
+  /v1/credits/balance:
+    get:
+      summary: Available credit balance for the signed-in account
+      responses:
+        '200':
+          description: Cached balance, equal to the ledger
+  /v1/credit-orders:
+    get:
+      summary: Recent credit orders
+      responses:
+        '200':
+          description: Order list
+    post:
+      summary: Freeze a package price and open a provider charge
+      responses:
+        '201':
+          description: Pending order
+        '503':
+          description: Payment provider unavailable
+  /v1/credit-orders/{id}:
+    get:
+      summary: One order for the signed-in account
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order
+  /v1/credit-orders/{id}/test-payment:
+    post:
+      summary: Mark the fake provider charge paid, then accept the signed webhook
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order after the provider query
+  /v1/payments/webhooks/mercadopago:
+    post:
+      summary: Provider notice. The signature is checked and the provider is queried before any credit is posted.
+      parameters:
+        - in: header
+          name: x-webhook-signature
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Notice applied once
+        '401':
+          description: Invalid signature
+  /v1/health:
+    get:
+      responses:
+        '200':
+          description: ok

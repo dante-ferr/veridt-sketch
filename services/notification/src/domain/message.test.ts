@@ -26,4 +26,26 @@ describe('completion email', () => {
     expect(message.subject).toBe('Captura concluída no Veridit')
     expect(message.text).toContain(`Hash do manifesto (SHA-256): ${hash}`)
   })
+
+  it('confirms an approved payment', () => {
+    const event: EmailEvent = {
+      type: 'PagamentoAprovado',
+      version: 1,
+      id: '4f0b1a0e-6d2c-4a1e-9b55-0c2a6d9e1f10',
+      occurredAt: '2026-11-10T12:00:00.000Z',
+      data: {
+        orderId: '8c1d9e2a-1b34-4c5d-8e6f-708192a3b4c5',
+        accountId: '11111111-1111-4111-8111-111111111111',
+        fullName: 'Ana Ribeiro',
+        email: 'ana@example.com',
+        packageName: 'Médio',
+        creditCount: 30,
+        totalCents: 12000,
+      },
+    }
+    const message = buildMessage(event, 'https://localhost:8443')
+    expect(message.subject).toBe('Pagamento confirmado no Veridit')
+    expect(message.text).toContain('30 créditos entraram no saldo.')
+    expect(message.to).toBe('ana@example.com')
+  })
 })

@@ -26,7 +26,11 @@ export class ObjectStore {
   }
 
   async getEvidence(key: string): Promise<Buffer> {
-    const response = await this.internal.send(new GetObjectCommand({ Bucket: this.config.evidenceBucket, Key: key }))
+    const response = await this.internal.send(new GetObjectCommand({
+      Bucket: this.config.evidenceBucket,
+      Key: key,
+      ChecksumMode: 'ENABLED',
+    }))
     const body = Buffer.from(await response.Body!.transformToByteArray())
     const recorded = response.ChecksumSHA256
     if (recorded && Buffer.from(recorded, 'base64').toString('hex') !== sha256Hex(body)) {

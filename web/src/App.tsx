@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { AccountPage, CaptureProgressPage, CreditsPage, NewRecordPage, RecordDetailPage, RecordsPage, SigningKeyPage, VideoSessionPage } from './evidence'
+import { BillingPage, CreditsPage, PaymentPage } from './credits'
+import { AccountPage, CaptureProgressPage, NewRecordPage, RecordDetailPage, RecordsPage, SigningKeyPage, VideoSessionPage } from './evidence'
 import { ConfirmEmailPage, ForgotPasswordPage, LoginPage, RegisterPage, ResetPasswordPage } from './pages'
 
 export function App() {
@@ -17,6 +18,8 @@ export function App() {
       <Route path="/captures/:id" element={<CaptureProgressPage />} />
       <Route path="/captures/:id/session" element={<VideoSessionPage />} />
       <Route path="/credits" element={<CreditsPage />} />
+      <Route path="/credits/billing" element={<BillingPage />} />
+      <Route path="/credits/orders/:id" element={<PaymentPage />} />
       <Route path="/account" element={<AccountPage />} />
       <Route path="/capture/signing-key" element={<SigningKeyPage />} />
     </Routes>

@@ -1,13 +1,13 @@
 # Evidências
 
-Este capítulo descreve a fatia da ADR-002 que está no código: captura no servidor, manifesto assinado, storage imutável e trilha só de inclusão. Compra, saldo e devolução de crédito não estão aqui.
+Este capítulo descreve a captura no servidor, o manifesto assinado, o storage imutável e a trilha só de inclusão. Saldo, compra e devolução estão em [Créditos e pagamentos](payments.md).
 
 ## O que o usuário faz
 
 1. Entra e abre **Novo registro**. Escolhe captura de tela ou vídeo de navegação, informa um endereço público e um título.
-2. Ao iniciar, a API de Captura chama a porta de reserva de crédito. O adaptador desta fatia responde `credit_reservation_blocked`. Nenhum registro é gravado e nada entra na fila.
-3. No vídeo, a ordem é alocar o navegador no worker e só então pedir a reserva. Como a reserva bloqueia, o worker descarta o navegador e o registro também não é gravado.
-4. Quando uma reserva futura devolver `reserved`, a tela fica `NA_FILA` e o vídeo fica `EM_ANDAMENTO`. Só a API de Captura muda o estado.
+2. Ao iniciar, a API de Captura reserva 1 crédito no serviço de pagamentos. Sem saldo, ou se o serviço não responde, nenhum registro é gravado e nada entra na fila.
+3. No vídeo, a ordem é alocar o navegador no worker e só então pedir a reserva. Se a reserva falha, o worker descarta o navegador e o registro também não é gravado.
+4. Com reserva feita, a tela fica `NA_FILA` e o vídeo fica `EM_ANDAMENTO`. Só a API de Captura muda o estado.
 5. O worker pede o início da tela pelo broker. A API só passa de `NA_FILA` para `EM_ANDAMENTO` se o estado ainda for `NA_FILA`.
 6. O worker calcula o SHA-256, grava os arquivos e o manifesto no MinIO e publica `CapturaExecutada`. Ele não assina.
 7. A API confere o hash do manifesto e o checksum de cada arquivo no storage. Se bater, assina, marca `CONCLUIDO` e publica `CapturaConcluida`. Se não bater, marca `FALHOU` e não assina.
@@ -28,6 +28,7 @@ A chave pública fica em `GET /v1/capture/signing-key`. A chave privada fica no 
 | Hash e assinatura; um byte alterado é detectado | `packages/evidence/src/manifest.test.ts` |
 | Tela começa em `NA_FILA`; vídeo começa em `EM_ANDAMENTO`; segundo início é recusado | o mesmo arquivo |
 | Reserva bloqueada não grava registro; vídeo aloca e descarta | `services/capture/src/application/start-capture.test.ts` |
+| Reserva, consumo e devolução | `services/payments/src/domain/books.test.ts` |
 | Assinatura só com checksum igual; falha não repete | `services/capture/src/application/accept-executed.test.ts` |
 | Worker faz hash antes do upload e não assina | `services/capture-worker/src/application/run-screenshot.test.ts` |
 | Worker não cita a chave de assinatura | `services/capture-worker/src/domain/worker-boundary.test.ts` |
@@ -53,8 +54,8 @@ O relógio gravado é o do servidor, em UTC. O worker consulta `pool.ntp.org`. S
 
 ## O que esta fatia não faz
 
-Não há saldo, pacote, Mercado Pago, livro-razão, webhook nem estorno. A porta `CreditReservationPort` é o único lugar da reserva. O adaptador em produção é `BlockedCreditReservation`.
+A porta `CreditReservationPort` continua sendo o único lugar da reserva na captura. Em execução o adaptador é `HttpCreditReservation`. `BlockedCreditReservation` fica nos testes que provam que uma reserva recusada não grava registro.
 
-A exclusão de evidência responde `purge_pending_adr_007` e não apaga arquivo. O prazo de retenção fica para a ADR-007. Uma captura que o worker abandona em `EM_ANDAMENTO` não expira nesta fatia; isso fica para a ADR-005. O usuário pode cancelar.
+A exclusão de evidência responde `purge_pending_adr_007` e não apaga arquivo. O prazo de retenção fica para a ADR-007. Uma captura que o worker abandona em `EM_ANDAMENTO` não expira nesta fatia; a devolução automática dessa reserva presa fica para a ADR-005. O usuário pode cancelar, e aí a reserva volta.
 
 O storage local usa `docker.io/bitnamilegacy/minio` e `docker.io/bitnamilegacy/minio-client` (MinIO `DEVELOPMENT.2025-05-24`). `quay.io/minio/minio` e `quay.io/minio/mc` recusam pull anônimo, e as tags antigas do Docker Hub não existem. O bucket `evidence` nasce com object lock e versionamento. As credenciais da aplicação não apagam objeto. Um segundo `Put` do mesmo nome usa `If-None-Match: *`. Relatório e zip vão para o bucket `artifacts`.

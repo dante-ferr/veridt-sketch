@@ -16,6 +16,7 @@ export type StoredAccount = {
 export type AccountSummary = {
   id: string
   fullName: string
+  email: string
   profile: Profile
   emailConfirmed: boolean
 }

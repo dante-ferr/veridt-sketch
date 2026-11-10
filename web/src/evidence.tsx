@@ -1,5 +1,5 @@
 import { FormEvent, ReactNode, useEffect, useRef, useState } from 'react'
-import { Link, NavLink, useNavigate, useParams } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { api, userMessage } from './api'
 import { useSession } from './session'
 
@@ -16,6 +16,27 @@ const stateLabel: Record<RecordState, string> = {
 
 export function Shell({ children }: { children: ReactNode }) {
   const session = useSession()
+  const location = useLocation()
+  const [balance, setBalance] = useState('Saldo …')
+  useEffect(() => {
+    if (!session.accessToken) return
+    let cancelled = false
+    const load = () => {
+      api<{ available: number }>('/v1/credits/balance', { token: session.accessToken })
+        .then((body) => {
+          if (!cancelled) setBalance(`Saldo ${body.available} créditos`)
+        })
+        .catch(() => {
+          if (!cancelled) setBalance('Saldo indisponível')
+        })
+    }
+    load()
+    window.addEventListener('veridit-balance', load)
+    return () => {
+      cancelled = true
+      window.removeEventListener('veridit-balance', load)
+    }
+  }, [session.accessToken, location.pathname])
   return (
     <div className="shell">
       <header className="appbar">
@@ -29,7 +50,7 @@ export function Shell({ children }: { children: ReactNode }) {
           </nav>
         </div>
         <div className="who">
-          <span>Créditos indisponíveis</span>
+          <span>{balance}</span>
           <span>{session.fullName || '…'}</span>
           <button className="secondary" type="button" onClick={() => void session.signOut()} disabled={session.pending}>Sair</button>
         </div>
@@ -188,7 +209,7 @@ export function NewRecordPage() {
             <p className="hint">Aparece na listagem e no relatório.</p>
           </div>
           <div className="row">
-            <p className="hint">Custo: 1 crédito, reservado agora e devolvido se a captura falhar. A reserva está bloqueada até a ADR-003, então o registro não começa.</p>
+            <p className="hint">Custo: 1 crédito, reservado agora e devolvido se a captura falhar.</p>
             <button className="primary" type="submit" disabled={pending || !session.accessToken}>Iniciar registro</button>
           </div>
         </section>
@@ -221,6 +242,10 @@ export function CaptureProgressPage() {
         .then((body) => {
           setRow(body)
           if (body.state === 'NA_FILA' || body.state === 'EM_ANDAMENTO') timer = window.setTimeout(load, 2000)
+          else {
+            window.dispatchEvent(new Event('veridit-balance'))
+            window.setTimeout(() => window.dispatchEvent(new Event('veridit-balance')), 2000)
+          }
         })
         .catch((caught) => setError(userMessage(caught)))
     }
@@ -234,6 +259,7 @@ export function CaptureProgressPage() {
     await api(`/v1/captures/${id}/cancel`, { method: 'POST', token: session.accessToken })
     const body = await api<CaptureStatus>(`/v1/captures/${id}`, { token: session.accessToken })
     setRow(body)
+    window.dispatchEvent(new Event('veridit-balance'))
   }
 
   return (
@@ -252,17 +278,17 @@ export function CaptureProgressPage() {
             <div><span>Início</span><strong>{formatUtc(row.startedAt)} UTC</strong></div>
           </div>
           <ul className="steps">
-            <li><span>Reserva de crédito</span><em>Aceita só quando a porta de créditos reservar. Nesta fatia ela bloqueia o início.</em></li>
+            <li><span>Reserva de crédito</span><em>1 crédito reservado antes do início. Volta se a captura falhar ou for cancelada.</em></li>
             <li><span>Na fila de captura</span><em>{row.captureKind === 'navigation_video' ? 'Não se aplica ao vídeo' : step(row.state, 'queued')}</em></li>
             <li><span>Abrindo o site e capturando</span><em>{step(row.state, 'running')}</em></li>
             <li><span>Cálculo dos hashes e assinatura do manifesto</span><em>{step(row.state, 'sign')}</em></li>
             <li><span>E-mail de conclusão</span><em>{row.state === 'CONCLUIDO' ? 'Pedido publicado' : 'Aguardando'}</em></li>
           </ul>
           {row.state === 'FALHOU' ? (
-            <p className="failbox" role="status">A captura falhou ({row.failureReason ?? 'erro'}). Ela não é refeita. A devolução do crédito fica para a ADR-003.</p>
+            <p className="failbox" role="status">A captura falhou ({row.failureReason ?? 'erro'}). Ela não é refeita. O crédito reservado volta ao saldo.</p>
           ) : null}
           {row.state === 'CANCELADO' ? (
-            <p className="hint">Captura cancelada. A devolução do crédito fica para a ADR-003.</p>
+            <p className="hint">Captura cancelada. O crédito reservado volta ao saldo.</p>
           ) : null}
           {row.state === 'NA_FILA' || row.state === 'EM_ANDAMENTO' ? (
             <div className="row">
@@ -297,7 +323,7 @@ export function VideoSessionPage() {
       if (body.type === 'frame' && body.jpegBase64) setFrame(`data:image/jpeg;base64,${body.jpegBase64}`)
       if (body.url) setUrl(body.url)
     }
-    socket.onerror = () => setError('A sessão de vídeo não está aberta. A reserva de crédito bloqueia o início até a ADR-003.')
+    socket.onerror = () => setError('A sessão de vídeo não está aberta.')
     return () => socket.close()
   }, [session.accessToken, id])
 
@@ -437,17 +463,6 @@ export function RecordDetailPage() {
   )
 }
 
-export function CreditsPage() {
-  return (
-    <Shell>
-      <section className="panel">
-        <h2>Créditos</h2>
-        <p>Não há saldo, pacote nem compra nesta fatia. A reserva de crédito fica bloqueada até a ADR-003. Sem essa reserva, a captura não grava um registro.</p>
-      </section>
-    </Shell>
-  )
-}
-
 export function AccountPage() {
   const session = useSession()
   return (
@@ -455,7 +470,7 @@ export function AccountPage() {
       <section className="panel">
         <h2>Minha conta</h2>
         <p>{session.fullName ? `Olá, ${session.fullName}.` : 'Carregando a sessão.'}</p>
-        <p className="hint">Telefone, endereço e faturamento entram só com a compra de créditos, na ADR-003.</p>
+        <p className="hint">Telefone, endereço e faturamento são pedidos na compra de créditos e ficam no serviço de pagamentos.</p>
       </section>
     </Shell>
   )

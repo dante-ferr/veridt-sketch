@@ -61,6 +61,7 @@ export class PrismaIdentityStore extends IdentityStore implements OnModuleInit {
     return {
       id: stored.id,
       fullName: stored.fullName,
+      email: stored.email,
       profile: stored.profile,
       emailConfirmed: stored.emailConfirmed,
     }

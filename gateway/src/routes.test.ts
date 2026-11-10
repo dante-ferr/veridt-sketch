@@ -11,6 +11,7 @@ describe('routes', () => {
     expect(classifyRoute('POST', '/v1/password-resets')).toBe('public')
     expect(classifyRoute('GET', '/v1/keys/jwks')).toBe('public')
     expect(classifyRoute('GET', '/v1/capture/signing-key')).toBe('public')
+    expect(classifyRoute('POST', '/v1/payments/webhooks/mercadopago')).toBe('public')
   })
 
   it('protects capture and record routes', () => {
@@ -23,6 +24,10 @@ describe('routes', () => {
   })
 
   it('protects the signed-in routes and rejects unknown ones', () => {
+    expect(classifyRoute('GET', '/v1/credit-packages')).toBe('protected')
+    expect(classifyRoute('GET', '/v1/credits/balance')).toBe('protected')
+    expect(classifyRoute('POST', '/v1/credit-orders')).toBe('protected')
+    expect(classifyRoute('POST', '/v1/credit-orders/4f0b1a0e-6d2c-4a1e-9b55-0c2a6d9e1f10/test-payment')).toBe('protected')
     expect(classifyRoute('GET', '/v1/me')).toBe('protected')
     expect(classifyRoute('POST', '/v1/sessions/logout')).toBe('protected')
     expect(classifyRoute('GET', '/v1/accounts')).toBe('missing')

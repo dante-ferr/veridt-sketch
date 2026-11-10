@@ -25,9 +25,13 @@ class MemorySessions extends VideoSessionPort {
 
 class GrantingCredit extends CreditReservationPort {
   phases: CreditReservationRequest['phase'][] = []
+  released: string[] = []
   async reserve(request: CreditReservationRequest): Promise<CreditReservationResult> {
     this.phases.push(request.phase)
     return { outcome: 'reserved', reservationId: `res-${request.recordId}` }
+  }
+  async release(recordId: string): Promise<void> {
+    this.released.push(recordId)
   }
 }
 

@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model CreditPackage {
+  id                  String  @id
+  code                String  @unique
+  name                String
+  creditCount         Int     @map("credit_count")
+  pricePerCreditCents Int     @map("price_per_credit_cents")
+  description         String
+  active              Boolean @default(true)
+
+  @@map("credit_packages")
+}
+
+model CreditOrder {
+  id                  String   @id
+  accountId           String   @map("account_id")
+  packageId           String   @map("package_id")
+  packageName         String   @map("package_name")
+  creditCount         Int      @map("credit_count")
+  pricePerCreditCents Int      @map("price_per_credit_cents")
+  totalCents          Int      @map("total_cents")
+  method              String
+  state               String
+  providerPaymentId   String   @unique @map("provider_payment_id")
+  pixCopyPaste        String   @map("pix_copy_paste")
+  checkoutUrl         String   @map("checkout_url")
+  expiresAt           DateTime @map("expires_at")
+  billing             Json
+  createdAt           DateTime @map("created_at")
+
+  @@index([accountId, createdAt])
+  @@map("credit_orders")
+}
+
+model ProviderCharge {
+  providerPaymentId String   @id @map("provider_payment_id")
+  status            String
+  method            String
+  amountCents       Int      @map("amount_cents")
+  expiresAt         DateTime @map("expires_at")
+  pixCopyPaste      String   @map("pix_copy_paste")
+  checkoutUrl       String   @map("checkout_url")
+
+  @@map("provider_charges")
+}
+
+model LedgerEntry {
+  id        String   @id
+  accountId String   @map("account_id")
+  kind      String
+  credits   Int
+  recordId  String?  @map("record_id")
+  orderId   String?  @map("order_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([accountId, createdAt])
+  @@map("ledger_entries")
+}
+
+model BalanceCache {
+  accountId String @id @map("account_id")
+  available Int
+
+  @@map("balance_cache")
+}
+
+model Outbox {
+  id         String   @id
+  type       String
+  occurredAt DateTime @map("occurred_at")
+  payload    Json
+  createdAt  DateTime @map("created_at")
+
+  @@map("outbox")
+}

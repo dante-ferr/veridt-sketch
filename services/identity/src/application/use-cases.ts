@@ -215,9 +215,9 @@ export class ResetPassword {
 export class GetAccount {
   constructor(private readonly store: IdentityStore) {}
 
-  async execute(accountId: string): Promise<Result<{ id: string; fullName: string; profile: Profile }>> {
+  async execute(accountId: string): Promise<Result<{ id: string; fullName: string; email: string; profile: Profile }>> {
     const account = await this.store.findById(accountId)
     if (!account || !account.emailConfirmed) return fail('unauthenticated', 'Sign in to continue.', 401)
-    return ok({ id: account.id, fullName: account.fullName, profile: account.profile })
+    return ok({ id: account.id, fullName: account.fullName, email: account.email, profile: account.profile })
   }
 }

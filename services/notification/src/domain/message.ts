@@ -23,6 +23,20 @@ export function buildMessage(event: EmailEvent, origin: string): OutboundEmail {
     }
   }
   if (event.type === 'CapturaConcluida') return completionMessage(event)
+  if (event.type === 'PagamentoAprovado') {
+    const total = formatBrl(event.data.totalCents)
+    return {
+      to: event.data.email,
+      subject: 'Pagamento confirmado no Veridit',
+      text: [
+        `Olá, ${event.data.fullName}.`,
+        '',
+        `O pagamento do pacote ${event.data.packageName} foi confirmado.`,
+        `${event.data.creditCount} créditos entraram no saldo.`,
+        `Total: ${total}.`,
+      ].join('\n'),
+    }
+  }
   const link = new URL('/reset-password', origin)
   link.searchParams.set('token', event.data.token)
   return {
@@ -37,6 +51,12 @@ export function buildMessage(event: EmailEvent, origin: string): OutboundEmail {
       link.toString(),
     ].join('\n'),
   }
+}
+
+function formatBrl(cents: number): string {
+  const reais = Math.floor(cents / 100).toLocaleString('pt-BR')
+  const fraction = String(cents % 100).padStart(2, '0')
+  return `R$ ${reais},${fraction}`
 }
 
 export function completionMessage(event: Extract<EmailEvent, { type: 'CapturaConcluida' }>): OutboundEmail {

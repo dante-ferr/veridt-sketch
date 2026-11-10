@@ -20,8 +20,16 @@ export class S3EvidenceObjects extends EvidenceObjects {
 
   async get(key: string) {
     try {
-      const head = await this.client.send(new HeadObjectCommand({ Bucket: this.config.s3Bucket, Key: key }))
-      const body = await this.client.send(new GetObjectCommand({ Bucket: this.config.s3Bucket, Key: key }))
+      const head = await this.client.send(new HeadObjectCommand({
+        Bucket: this.config.s3Bucket,
+        Key: key,
+        ChecksumMode: 'ENABLED',
+      }))
+      const body = await this.client.send(new GetObjectCommand({
+        Bucket: this.config.s3Bucket,
+        Key: key,
+        ChecksumMode: 'ENABLED',
+      }))
       const bytes = Buffer.from(await body.Body!.transformToByteArray())
       const recorded = head.ChecksumSHA256 ? checksumHex(head.ChecksumSHA256) : null
       if (!recorded || recorded !== sha256Hex(bytes)) return null

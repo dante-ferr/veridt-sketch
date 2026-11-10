@@ -29,15 +29,15 @@ Todo o sistema desta fatia é TypeScript em Node.js.
 | Fila | RabbitMQ |
 | E-mail local | Mailpit |
 
-O código, as pastas, as rotas e os schemas usam inglês. Os nomes de evento ficam como estão nas ADRs: `ConfirmacaoEmailSolicitada`, `RecuperacaoSenhaSolicitada`, `RegistroCriado`, `CapturaExecutada`, `CapturaComErro`, `CapturaConcluida`, `CapturaFalhou`, `CapturaCancelada` e `EventoAuditoria`.
+O código, as pastas, as rotas e os schemas usam inglês. Os nomes de evento ficam como estão nas ADRs: `ConfirmacaoEmailSolicitada`, `RecuperacaoSenhaSolicitada`, `RegistroCriado`, `CapturaExecutada`, `CapturaComErro`, `CapturaConcluida`, `CapturaFalhou`, `CapturaCancelada`, `EventoAuditoria`, `PagamentoAprovado` e `CreditoDevolvido`. `PagamentoEstornado` é tratado dentro do serviço de pagamentos e não vai para a notificação.
 
-## 5. Fatia atual: ADR-001 e ADR-002
+## 5. Fatia atual: ADR-001, ADR-002 e ADR-003
 
-A ADR-001 continua valendo: cadastro, confirmação, login, logout, recuperação e o bloqueio após 5 falhas. A ADR-002 acrescenta captura no servidor, manifesto assinado, storage imutável e trilha só de inclusão. O comportamento está em [Evidências](evidence.md).
+A ADR-001 continua valendo: cadastro, confirmação, login, logout, recuperação e o bloqueio após 5 falhas. A ADR-002 acrescenta captura no servidor, manifesto assinado, storage imutável e trilha só de inclusão. A ADR-003 acrescenta o livro-razão, a compra e a reserva real. O comportamento está em [Evidências](evidence.md) e [Créditos e pagamentos](payments.md).
 
-A reserva de crédito é uma porta da API de Captura. Nesta fatia o adaptador responde bloqueado. Não há saldo, pacote nem compra. A captura de tela não entra na fila. No vídeo, o worker aloca o navegador, a reserva bloqueia e o navegador é descartado. Nenhum registro é gravado.
+A reserva é chamada síncrona ao serviço de pagamentos. O adaptador bloqueado permanece só nos testes da porta. Em execução, saldo insuficiente ou serviço fora do ar impede a captura e não grava registro.
 
-Números da ADR-002 que a ADR não fixa:
+Números que as ADRs não fixam:
 
 | Regra | Valor |
 | :--- | :--- |
@@ -46,8 +46,15 @@ Números da ADR-002 que a ADR não fixa:
 | Sessão de vídeo | 15 minutos |
 | Link de download | 5 minutos |
 | Página da listagem | 5 registros |
+| Créditos por registro | 1, na tela e no vídeo |
+| Pacotes iniciais | Básico 10 × R$ 5,00; Médio 30 × R$ 4,00; Premium 100 × R$ 3,00 |
+| Vida do Pix | 30 minutos |
+| Reconciliação | A cada 60 segundos, só cobranças `PENDENTE` com mais de 15 segundos |
+| Conferência do saldo | A cada 24 horas |
+| Espera da reserva | 3 segundos; depois a captura não começa |
+| Provedor local | Adaptador falso. Mercado Pago só com token e `PAYMENT_PROVIDER=mercadopago` |
 
-Números que a ADR não fixa e que valem neste código:
+Números de sessão que a ADR-001 não fixa:
 
 | Regra | Valor |
 | :--- | :--- |
@@ -67,8 +74,9 @@ A entrada externa é HTTPS em `https://localhost:8443`, com certificado autoassi
 | :--- | :--- |
 | Segunda instância do gateway e da identidade | ADR-005 |
 | Certificado de uma autoridade pública, cofre de segredos e cifra do volume do Postgres | Quando a implantação deixar de ser só local |
-| Reserva de crédito, compra, livro-razão, webhook e estorno | ADR-003. A porta já existe e está bloqueada |
 | Expurgo e prazo de retenção | ADR-007 |
-| Expiração de captura abandonada em `EM_ANDAMENTO` | ADR-005 |
+| Expiração de captura abandonada e de reserva presa | ADR-005 |
+| Pool de navegadores e elasticidade da fila | ADR-004 |
+| Tela de administrador para criar pacote | ADR-009 |
 | Carimbo ICP-Brasil | Evolução citada na ADR-002, fora desta fatia |
-| ADR-003 e o restante do produto | Só depois de confirmação explícita. Veja o [roteiro](roadmap.md) |
+| ADR-004 e o restante do produto | Só depois de confirmação explícita. Veja o [roteiro](roadmap.md) |

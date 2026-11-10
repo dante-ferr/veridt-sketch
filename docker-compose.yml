@@ -11,6 +11,7 @@ services:
       NOTIFICATION_DB_PASSWORD: ${NOTIFICATION_DB_PASSWORD:-notification_local}
       CAPTURE_DB_PASSWORD: ${CAPTURE_DB_PASSWORD:-capture_local}
       RECORDS_DB_PASSWORD: ${RECORDS_DB_PASSWORD:-records_local}
+      PAYMENTS_DB_PASSWORD: ${PAYMENTS_DB_PASSWORD:-payments_local}
       TZ: America/Sao_Paulo
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -100,6 +101,7 @@ services:
       POSTGRES_DB: veridit
       CAPTURE_DB_PASSWORD: ${CAPTURE_DB_PASSWORD:-capture_local}
       RECORDS_DB_PASSWORD: ${RECORDS_DB_PASSWORD:-records_local}
+      PAYMENTS_DB_PASSWORD: ${PAYMENTS_DB_PASSWORD:-payments_local}
     volumes:
       - ./infra/postgres/ensure-schemas.sh:/ensure-schemas.sh:ro
     entrypoint: ["/bin/sh", "/ensure-schemas.sh"]
@@ -143,6 +145,37 @@ services:
         condition: service_healthy
     restart: "no"
 
+  payments:
+    build:
+      context: .
+      dockerfile: services/payments/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://payments:${PAYMENTS_DB_PASSWORD:-payments_local}@postgres:5432/veridit?schema=payments
+      RABBIT_URL: amqp://veridit:${RABBITMQ_PASSWORD:-veridit_local}@rabbitmq:5672
+      JWKS_URL: http://identity:3000/v1/keys/jwks
+      JWT_ISSUER: veridit-identity
+      JWT_AUDIENCE: veridit
+      PAYMENTS_SERVICE_TOKEN: ${PAYMENTS_SERVICE_TOKEN:-payments_service_local}
+      PAYMENT_WEBHOOK_SECRET: ${PAYMENT_WEBHOOK_SECRET:-webhook_local_secret}
+      PAYMENT_PROVIDER: ${PAYMENT_PROVIDER:-fake}
+      MERCADOPAGO_ACCESS_TOKEN: ${MERCADOPAGO_ACCESS_TOKEN:-}
+      PUBLIC_WEB_ORIGIN: https://localhost:8443
+      PAYMENT_RECONCILE_INTERVAL_MS: "60000"
+      PAYMENT_RECONCILE_MIN_AGE_MS: "15000"
+      TZ: America/Sao_Paulo
+    depends_on:
+      schema-init:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+      identity:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/v1/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 3s
+      timeout: 5s
+      retries: 40
+
   capture:
     build:
       context: .
@@ -161,6 +194,8 @@ services:
       S3_BUCKET: evidence
       WORKER_URL: http://capture-worker:3010
       CAPTURE_INTERNAL_TOKEN: ${CAPTURE_INTERNAL_TOKEN:-capture_internal_local}
+      PAYMENTS_URL: http://payments:3000
+      PAYMENTS_SERVICE_TOKEN: ${PAYMENTS_SERVICE_TOKEN:-payments_service_local}
       TZ: America/Sao_Paulo
     volumes:
       - capture-secrets:/var/lib/veridit
@@ -170,6 +205,8 @@ services:
       rabbitmq:
         condition: service_healthy
       identity:
+        condition: service_healthy
+      payments:
         condition: service_healthy
       minio-init:
         condition: service_completed_successfully
@@ -252,6 +289,7 @@ services:
       IDENTITY_URL: http://identity:3000
       CAPTURE_URL: http://capture:3000
       RECORDS_URL: http://records:3000
+      PAYMENTS_URL: http://payments:3000
       CAPTURE_WORKER_URL: http://capture-worker:3010
       JWKS_URL: http://identity:3000/v1/keys/jwks
       JWT_ISSUER: veridit-identity

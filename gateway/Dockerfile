@@ -9,6 +9,7 @@ COPY services/notification/package.json services/notification/
 COPY services/capture/package.json services/capture/
 COPY services/capture-worker/package.json services/capture-worker/
 COPY services/records/package.json services/records/
+COPY services/payments/package.json services/payments/
 COPY gateway/package.json gateway/
 COPY web/package.json web/
 RUN npm ci
@@ -18,6 +19,7 @@ COPY services/identity/openapi.yaml services/identity/openapi.yaml
 COPY services/notification/openapi.yaml services/notification/openapi.yaml
 COPY services/capture/openapi.yaml services/capture/openapi.yaml
 COPY services/records/openapi.yaml services/records/openapi.yaml
+COPY services/payments/openapi.yaml services/payments/openapi.yaml
 RUN npm run build -w packages/auth && npm run build -w gateway
 ENV NODE_ENV=production
 EXPOSE 8080

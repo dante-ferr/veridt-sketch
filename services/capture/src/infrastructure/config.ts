@@ -15,6 +15,8 @@ export class Config {
     readonly workerUrl: string,
     readonly internalToken: string,
     readonly manifestKeyPath: string,
+    readonly paymentsUrl: string,
+    readonly paymentsServiceToken: string,
   ) {}
 
   static read(): Config {
@@ -34,6 +36,8 @@ export class Config {
       required('WORKER_URL'),
       required('CAPTURE_INTERNAL_TOKEN'),
       required('MANIFEST_PRIVATE_KEY_PATH'),
+      required('PAYMENTS_URL'),
+      required('PAYMENTS_SERVICE_TOKEN'),
     )
   }
 }

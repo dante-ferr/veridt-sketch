@@ -63,6 +63,7 @@ export class EventConsumer implements OnModuleDestroy {
           await channel.bindQueue(queue, exchange, 'ConfirmacaoEmailSolicitada')
           await channel.bindQueue(queue, exchange, 'RecuperacaoSenhaSolicitada')
           await channel.bindQueue(queue, exchange, 'CapturaConcluida')
+          await channel.bindQueue(queue, exchange, 'PagamentoAprovado')
           await channel.prefetch(5)
           await channel.consume(queue, (message) => {
             if (!message) return

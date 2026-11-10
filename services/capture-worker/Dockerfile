@@ -9,6 +9,7 @@ COPY services/notification/package.json services/notification/
 COPY services/capture/package.json services/capture/
 COPY services/capture-worker/package.json services/capture-worker/
 COPY services/records/package.json services/records/
+COPY services/payments/package.json services/payments/
 COPY gateway/package.json gateway/
 COPY web/package.json web/
 RUN npm ci
