@@ -1,0 +1,75 @@
+.shell { min-height: 100vh; }
+
+/* Top bar, per the Figma spec */
+.appbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 24px;
+  /* Inset line instead of border-bottom: Figma draws the stroke inside, so the bar stays 68px. */
+  box-shadow: inset 0 -1px 0 var(--color-line);
+  background: var(--color-surface);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.appbar .wordmark {
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.brand nav {
+  display: flex;
+  gap: 16px;
+}
+
+/* Same look for the current page and the others (Figma has no active or hover state). */
+.brand nav a {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  text-decoration: underline;
+  color: var(--color-seal);
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.who .balance {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--color-muted);
+}
+
+.who .user-name {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--color-ink);
+}
+
+
+/* Page content area */
+.canvas {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (max-width: 800px) {
+  .appbar { flex-direction: column; align-items: flex-start; }
+  .brand { flex-wrap: wrap; }
+}

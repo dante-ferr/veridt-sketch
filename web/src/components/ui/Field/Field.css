@@ -1,0 +1,42 @@
+/* Field: label + control + hint/error */
+.ui-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+}
+.ui-field-label {
+  display: block;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--color-ink);
+}
+.ui-field-error {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--color-fail);
+}
+
+/* Inputs and selects. Element + class so it beats the global input[type] rules. */
+:is(input, select).ui-input {
+  width: 100%;
+  height: 36px;
+  min-height: 36px;
+  margin: 0;
+  padding: 0 8px;
+  border: 1px solid var(--color-muted);
+  border-radius: 2px;
+  background: var(--color-surface);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--color-ink);
+}
+input.ui-input::placeholder { color: var(--color-muted); }
+input.ui-input--invalid { border: 2px solid var(--color-fail); }
+select.ui-input { appearance: none; cursor: pointer; }

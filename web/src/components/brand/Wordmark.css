@@ -1,0 +1,11 @@
+.wordmark {
+  display: inline-block;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 32px;
+  line-height: 40px;
+  letter-spacing: 0;
+  color: var(--color-ink);
+}
+.logo-link { display: inline-flex; align-items: center; line-height: 1; text-decoration: none; }

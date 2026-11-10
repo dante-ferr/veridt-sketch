@@ -1,0 +1,38 @@
+.recording-shell { min-height: 100vh; }
+
+/* Top bar, per the Figma: 69px, white, line below */
+.recording-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-surface);
+}
+
+.recording-bar-status,
+.recording-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.recording-bar .wordmark {
+  font-size: 20px;
+  line-height: 28px;
+}
+
+/* 1184px of content at 1280 (48px on each side) */
+.recording-main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 48px;
+}
+
+@media (max-width: 800px) {
+  .recording-bar { flex-direction: column; align-items: flex-start; }
+  .recording-bar-status { flex-wrap: wrap; }
+  .recording-main { padding: 24px 16px; }
+}

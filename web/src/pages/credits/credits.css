@@ -1,0 +1,213 @@
+/* Purchase wizard steps (shared by Comprar créditos, Faturamento and Pagamento) */
+.wizard {
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+.wizard .here { color: var(--color-seal); }
+.wizard .done { color: var(--color-ok); }
+.wizard .todo { color: var(--color-muted); }
+
+/* ── Comprar créditos (CreditsPage), per the Figma spec ── */
+.credits-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.credits-page > .alert { margin: 0; }
+
+/* Package cards (Card + page layout) */
+.packages {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ui-card.package {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.ui-card.package.selected { border: 2px solid var(--color-seal); }
+
+.package-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.selected-tag {
+  padding: 2px 8px;
+  border-radius: 2px;
+  background: var(--color-seal-tint);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--color-seal);
+}
+
+.credits-count {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 40px;
+  color: var(--color-ink);
+}
+
+/* ── Dados de faturamento (BillingPage) ── */
+.billing-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  align-items: start;
+  gap: 24px;
+}
+
+.billing-form .split { display: grid; gap: 16px; }
+.billing-form .split.cols-2 { grid-template-columns: 1fr 1fr; }
+.billing-form .split.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.billing-form .split.narrow-first { grid-template-columns: 180px minmax(0, 1fr); }
+
+/* Summary lines */
+.billing-summary .summary-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--color-ink);
+}
+.billing-summary .summary-line span { font-weight: 400; }
+.billing-summary .summary-line strong { font-weight: 500; }
+.billing-summary .summary-line.total {
+  padding-top: 8px;
+  border-top: 1px solid var(--color-line);
+}
+
+/* ── Pagamento (PaymentPage) ── */
+
+/* Tabs above the two columns */
+.pay-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-muted);
+}
+
+.pay-tabs button {
+  padding: 11px 24px 8px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: none;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.pay-tabs button.active {
+  border-bottom-color: var(--color-seal);
+  font-weight: 500;
+  color: var(--color-seal);
+}
+
+.pay-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  align-items: start;
+  gap: 24px;
+}
+
+/* Left card is a row: QR box + Pix content */
+.ui-card.pay-card {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.qr {
+  flex: none;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border: 2px dashed var(--color-muted);
+  border-radius: 2px;
+  background: var(--color-paper);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+.pix-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pix-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pix-expires {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--color-muted);
+}
+
+/* Local fake provider only (not in Figma) */
+.pay-test { align-self: flex-start; }
+
+/* Summary card: same as billing, plus the Mercado Pago block */
+.pay-alternative {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-line);
+}
+
+.pay-alternative-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--color-ink);
+}
+
+/* Payment provider down (Comprar créditos, Faturamento and Pagamento) */
+.provider-down {
+  margin: 0;
+  padding: 16px 24px;
+  border: 1px solid var(--color-fail);
+  border-radius: 4px;
+  background: var(--color-surface);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--color-ink);
+}
+
+.provider-down strong {
+  font-weight: 600;
+  color: var(--color-fail);
+}
+
+@media (max-width: 800px) {
+  .packages { flex-direction: column; align-items: stretch; }
+  .ui-card.pay-card { flex-direction: column; }
+  .pay-grid, .billing-grid, .billing-form .split.cols-2, .billing-form .split.cols-3, .billing-form .split.narrow-first { grid-template-columns: 1fr; }
+}

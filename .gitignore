@@ -6,3 +6,4 @@ generated/
 .env
 *.log
 coverage/
+*.local.md

@@ -1,0 +1,13 @@
+/* Layout shared by the authentication screens already migrated to the Figma
+   (login, forgot password, register). Card, fields, buttons and links come
+   from components/ui. Scoped to .auth-screen so the screens not yet migrated
+   keep their current look. */
+
+.auth-screen { gap: 24px; }
+
+.auth-screen .brand-lockup { margin: 0; }
+
+.auth-screen .alert { margin: 0; }
+
+/* Login and forgot-password cards */
+.auth-screen .auth-card { width: min(420px, 100%); }

@@ -1,0 +1,12 @@
+/* Content on the left, action on the right */
+.ui-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0;
+}
+.ui-action-row--divided {
+  padding-top: 16px;
+  border-top: 1px solid var(--color-line);
+}

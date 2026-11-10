@@ -1,0 +1,17 @@
+/* This media query stays before .split-page and .filters, as in the original
+   stylesheet: the later rules override it, so the look is unchanged. */
+@media (max-width: 800px) {
+  .split-page, .filters { grid-template-columns: 1fr; }
+}
+
+.heading-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+.split-page { display: grid; grid-template-columns: 1.4fr 0.8fr; gap: 18px; }
+.filters { display: grid; grid-template-columns: 1fr 220px; gap: 16px; margin-top: 12px; }
+.pager { display: flex; justify-content: space-between; margin-top: 12px; }
+.steps { list-style: none; padding: 0; }
+.steps li { display: flex; justify-content: space-between; gap: 12px; border-top: 1px solid #e7e2d8; padding: 10px 0; }
+.failbox { border: 1px solid #c2410c; padding: 12px; border-radius: 8px; }
+.frame { width: 100%; background: #fff; border: 1px solid #d5dbe0; }
+.key { white-space: pre-wrap; word-break: break-all; }
+.meta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.meta span { display: block; color: #5c6770; font-size: 13px; }

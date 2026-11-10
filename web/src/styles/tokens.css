@@ -1,0 +1,20 @@
+:root {
+  --color-ink: #1B2430;
+  --color-muted: #5B6573;
+  --color-line: #D6D2C8;
+  --color-surface: #FFFFFF;
+  --color-seal: #0F4C5C;
+  --color-seal-tint: #DCEAE9;
+  --color-fail: #B4441C;
+  --color-ok: #1D5F8A;
+  --color-pending: #8A6A12;
+  --color-paper: #F6F4EF;
+
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  color: #1c2430;
+  background: #f3f0e8;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+}

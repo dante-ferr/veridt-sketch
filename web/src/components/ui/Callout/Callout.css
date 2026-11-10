@@ -1,0 +1,11 @@
+.ui-callout {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 16px 24px;
+  border: 1px solid var(--color-fail);
+  border-radius: 4px;
+  background: var(--color-surface);
+}

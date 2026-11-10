@@ -1,0 +1,16 @@
+.ui-text {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--color-ink);
+}
+.ui-text--muted { color: var(--color-muted); }
+
+.ui-hint {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--color-muted);
+}

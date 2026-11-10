@@ -1,0 +1,50 @@
+/* State pill from the Figma: colored dot + mono code (+ optional label).
+   Used for payment orders and capture records. */
+.state-badge {
+  --state-color: var(--color-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border: 1px solid var(--state-color);
+  border-radius: 2px;
+  background: var(--color-surface);
+  white-space: nowrap;
+}
+
+/* Payment states */
+.state-badge.PENDENTE { --state-color: var(--color-pending); }
+.state-badge.APROVADO { --state-color: var(--color-ok); }
+.state-badge.RECUSADO,
+.state-badge.EXPIRADO { --state-color: var(--color-fail); }
+.state-badge.ESTORNADO { --state-color: var(--color-muted); }
+
+/* Capture record states */
+.state-badge.NA_FILA,
+.state-badge.EM_ANDAMENTO { --state-color: var(--color-pending); }
+.state-badge.CONCLUIDO { --state-color: var(--color-ok); }
+.state-badge.FALHOU { --state-color: var(--color-fail); }
+.state-badge.CANCELADO { --state-color: var(--color-muted); }
+
+.state-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--state-color);
+}
+
+.state-badge-code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--state-color);
+}
+
+.state-badge-label {
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--color-ink);
+}
