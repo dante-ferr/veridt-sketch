@@ -4,6 +4,7 @@ import { AuthBrandLockup } from "@/components/auth/AuthBrandLockup";
 import { api, userMessage } from "@/services/api";
 import { saveSession } from "@/services/session-store";
 import "./auth.css";
+import "./auth-screen.css";
 import "./LoginPage.css";
 
 export function LoginPage() {
@@ -35,7 +36,7 @@ export function LoginPage() {
   }
 
   return (
-    <main className="page login">
+    <main className="page auth-screen login">
       <AuthBrandLockup />
       <p className="subtitle">
         Registro de evidências digitais com hash, data e hora verificáveis.

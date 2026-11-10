@@ -1,0 +1,95 @@
+/* Figma styles shared by the authentication screens already migrated
+   (login, forgot password). Scoped to .auth-screen so the screens not yet
+   migrated keep their current look. */
+
+.auth-screen { gap: 24px; }
+
+.auth-screen .brand-lockup { margin: 0; }
+
+/* Card */
+.auth-screen .card {
+  width: min(420px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  background: var(--color-surface);
+  box-shadow: none;
+}
+
+.auth-screen .card h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--color-ink);
+}
+
+.auth-screen .card .alert { margin: 0; }
+
+/* Fields */
+.auth-screen .field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+}
+
+.auth-screen .field label {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--color-ink);
+}
+
+.auth-screen .field input {
+  height: 36px;
+  min-height: 36px;
+  padding: 0 8px;
+  border: 1px solid var(--color-muted);
+  border-radius: 2px;
+  background: var(--color-surface);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--color-ink);
+}
+
+.auth-screen .field input::placeholder { color: var(--color-muted); }
+
+/* Link + primary button row */
+.auth-screen .row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+}
+
+.auth-screen .row a {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  text-decoration: underline;
+  color: var(--color-seal);
+}
+
+.auth-screen button.primary {
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #FFFFFF;
+}
+
+.auth-screen .note {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--color-muted);
+}

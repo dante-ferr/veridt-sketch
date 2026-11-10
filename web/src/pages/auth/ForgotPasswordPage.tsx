@@ -1,29 +1,31 @@
-import { FormEvent, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { AuthBrandLockup } from '@/components/auth/AuthBrandLockup'
-import { api, userMessage } from '@/services/api'
-import './auth.css'
+import { FormEvent, useState } from "react";
+import { Link } from "react-router-dom";
+import { AuthBrandLockup } from "@/components/auth/AuthBrandLockup";
+import { api, userMessage } from "@/services/api";
+import "./auth.css";
+import "./auth-screen.css";
+import "./ForgotPasswordPage.css";
 
 export function ForgotPasswordPage() {
-  const [email, setEmail] = useState('')
-  const [error, setError] = useState('')
-  const [pending, setPending] = useState(false)
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
 
   async function onSubmit(event: FormEvent) {
-    event.preventDefault()
-    setError('')
-    setPending(true)
+    event.preventDefault();
+    setError("");
+    setPending(true);
     try {
-      await api('/v1/password-recoveries', { method: 'POST', body: { email } })
+      await api("/v1/password-recoveries", { method: "POST", body: { email } });
     } catch (caught) {
-      setError(userMessage(caught))
+      setError(userMessage(caught));
     } finally {
-      setPending(false)
+      setPending(false);
     }
   }
 
   return (
-    <main className="page">
+    <main className="page auth-screen forgot-password">
       <AuthBrandLockup />
       <div className="pair">
         <form className="card" onSubmit={onSubmit}>
@@ -55,6 +57,7 @@ export function ForgotPasswordPage() {
             </button>
           </div>
         </form>
+
         <section className="card">
           <h2>Verifique seu e-mail</h2>
           <p>
@@ -76,5 +79,5 @@ export function ForgotPasswordPage() {
         </section>
       </div>
     </main>
-  )
+  );
 }
