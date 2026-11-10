@@ -168,50 +168,6 @@
   color: var(--color-muted);
 }
 
-.pix-box {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 8px 16px 16px;
-  border-radius: 2px;
-  background: var(--color-seal-tint);
-}
-
-.pix-box-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.pix-box-head strong {
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 18px;
-  color: var(--color-ink);
-}
-
-.pix-copy {
-  padding: 2px 8px;
-  border: 1px solid var(--color-seal);
-  border-radius: 2px;
-  background: var(--color-surface);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 16px;
-  color: var(--color-seal);
-  cursor: pointer;
-}
-
-.pix-code {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 20px;
-  color: var(--color-ink);
-  word-break: break-all;
-}
-
 /* Local fake provider only (not in Figma) */
 .pay-test { align-self: flex-start; }
 

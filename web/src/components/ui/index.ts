@@ -2,6 +2,7 @@
 export { ActionRow } from "./ActionRow/ActionRow";
 export { Button, ButtonAnchor, ButtonLink } from "./Button/Button";
 export { Card } from "./Card/Card";
+export { CopyBox } from "./CopyBox/CopyBox";
 export { Field } from "./Field/Field";
 export { Input, Select } from "./Field/Input";
 export { Heading, PageHeader } from "./Heading/Heading";

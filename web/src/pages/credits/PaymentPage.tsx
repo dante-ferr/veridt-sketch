@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
-import { Button, ButtonAnchor, Card, Heading, Hint, Text } from '@/components/ui'
+import { Button, ButtonAnchor, Card, CopyBox, Heading, Hint, Text } from '@/components/ui'
 import { ProviderDown } from '@/components/credits/ProviderDown'
 import { Steps } from '@/components/credits/Steps'
 import { PaymentStateBadge } from '@/components/credits/PaymentStateBadge'
@@ -19,7 +19,6 @@ export function PaymentPage() {
   const [tab, setTab] = useState<'pix' | 'checkout'>('pix')
   const [error, setError] = useState('')
   const [pending, setPending] = useState(false)
-  const [copied, setCopied] = useState(false)
   const [left, setLeft] = useState('')
 
   useEffect(() => {
@@ -71,12 +70,6 @@ export function PaymentPage() {
     }
   }
 
-  async function copyPix() {
-    if (!order) return
-    await navigator.clipboard.writeText(order.pixCopyPaste).catch(() => undefined)
-    setCopied(true)
-  }
-
   return (
     <AppShell>
       <div className="credits-page payment-page">
@@ -99,13 +92,7 @@ export function PaymentPage() {
                       {order.state === 'PENDENTE' ? <span className="pix-expires">Expira em {left}</span> : null}
                     </div>
                     <Text>Abra o app do seu banco, escolha pagar com Pix e leia o QR Code, ou cole o código abaixo.</Text>
-                    <div className="pix-box">
-                      <div className="pix-box-head">
-                        <strong>Pix copia e cola</strong>
-                        <button className="pix-copy" type="button" onClick={() => void copyPix()}>{copied ? 'Copiado' : 'Copiar'}</button>
-                      </div>
-                      <p className="pix-code">{order.pixCopyPaste}</p>
-                    </div>
+                    <CopyBox title="Pix copia e cola" value={order.pixCopyPaste} />
                     <Hint>Os créditos entram no saldo assim que o provedor confirmar o pagamento. Você também receberá um e-mail de confirmação.</Hint>
                     {order.testConfirmation && order.state === 'PENDENTE' ? (
                       <Button className="pay-test" disabled={pending} onClick={() => void confirmTest()}>Confirmar pagamento de teste</Button>
