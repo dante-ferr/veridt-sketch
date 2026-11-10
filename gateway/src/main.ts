@@ -53,6 +53,10 @@ async function main(): Promise<void> {
   })
   await app.listen({ port, host: '0.0.0.0' })
   const proxyServer = httpProxy.createProxyServer({ ws: true, ignorePath: true })
+  proxyServer.on('error', (error, _request, target) => {
+    console.log(JSON.stringify({ msg: 'ws_upstream_error', error: error.message }))
+    if (target && 'destroy' in target) target.destroy()
+  })
   app.server.on('upgrade', (request, socket, head) => {
     const url = new URL(request.url ?? '/', 'http://gateway')
     const match = /^\/v1\/captures\/([0-9a-f-]{36})\/session$/.exec(url.pathname)
@@ -62,10 +66,19 @@ async function main(): Promise<void> {
       return
     }
     verifyAccessToken(token, keys, { issuer, audience })
-      .then((access) => {
-        const id = match[1]
-        request.url = `/sessions/${id}?accountId=${access.sub}`
-        proxyServer.ws(request, socket, head, { target: workerUrl })
+      .then(async (access) => {
+        // The URL carries the capture record id; the worker keys live sessions by the
+        // record's sessionId. The capture API also checks that the record is the caller's.
+        const record = await fetch(new URL(`/v1/captures/${match[1]}`, captureUrl), {
+          headers: { authorization: `Bearer ${token}` },
+        })
+        if (!record.ok) throw new Error('record_unavailable')
+        const body = (await record.json()) as { state?: string; sessionId?: string | null }
+        if (body.state !== 'EM_ANDAMENTO' || !body.sessionId) throw new Error('session_not_open')
+        // ignorePath drops request.url, so the worker path has to be in the target.
+        const target = new URL(`/sessions/${body.sessionId}`, workerUrl)
+        target.searchParams.set('accountId', access.sub)
+        proxyServer.ws(request, socket, head, { target: target.toString() })
       })
       .catch(() => socket.destroy())
   })
