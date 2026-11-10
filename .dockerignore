@@ -1,0 +1,8 @@
+node_modules
+**/dist
+**/generated
+docs/book
+.git
+local
+coverage
+.env

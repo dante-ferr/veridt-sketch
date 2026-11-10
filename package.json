@@ -1,0 +1,14 @@
+{
+  "name": "veridit",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "services/*",
+    "gateway",
+    "web"
+  ],
+  "scripts": {
+    "build": "npm run build -w packages/events && npm run build -w packages/evidence && npm run build -w packages/auth && npm run build -w services/identity && npm run build -w services/notification && npm run build -w services/capture && npm run build -w services/capture-worker && npm run build -w services/records && npm run build -w gateway && npm run build -w web",
+    "test": "npm run build -w packages/events && npm run build -w packages/evidence && npm run build -w packages/auth && npm run test -w packages/evidence && npm run test -w packages/auth && npm run test -w services/identity && npm run test -w services/notification && npm run test -w services/capture && npm run test -w services/capture-worker && npm run test -w services/records && npm run test -w gateway"
+  }
+}

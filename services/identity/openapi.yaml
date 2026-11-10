@@ -1,0 +1,100 @@
+openapi: 3.0.3
+info:
+  title: Identity
+  version: 0.1.0
+  description: Accounts, sessions, and password recovery for this slice.
+servers:
+  - url: https://localhost:8443
+paths:
+  /v1/accounts:
+    post:
+      summary: Register a lawyer or a common user
+      responses:
+        '201':
+          description: Account created. The email is not confirmed yet.
+        '400':
+          description: Invalid input
+        '409':
+          description: Email or CPF already registered
+  /v1/accounts/confirmation:
+    post:
+      summary: Confirm an email with a single-use token
+      responses:
+        '200':
+          description: Email confirmed
+        '400':
+          description: Invalid or expired token
+  /v1/sessions:
+    post:
+      summary: Sign in with a confirmed email
+      responses:
+        '200':
+          description: Access token and refresh token
+        '401':
+          description: Unknown email or wrong password
+        '403':
+          description: Email is not confirmed
+        '423':
+          description: Account locked for 15 minutes
+  /v1/sessions/refresh:
+    post:
+      summary: Issue a new access token from a refresh token
+      responses:
+        '200':
+          description: New access token
+        '401':
+          description: Refresh token missing, expired, or revoked
+  /v1/sessions/logout:
+    post:
+      summary: Revoke the refresh token
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Refresh token revoked
+        '401':
+          description: Access token missing or invalid
+  /v1/password-recoveries:
+    post:
+      summary: Ask for a password reset link
+      responses:
+        '202':
+          description: Same reply whether or not the email exists
+        '400':
+          description: Malformed email
+  /v1/password-resets:
+    post:
+      summary: Set a new password with a single-use token
+      responses:
+        '200':
+          description: Password updated and sessions revoked
+        '400':
+          description: Invalid token or password
+  /v1/me:
+    get:
+      summary: Read the signed-in account
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Account id, name, and profile
+        '401':
+          description: Access token missing or invalid
+  /v1/keys/jwks:
+    get:
+      summary: Public Ed25519 key
+      responses:
+        '200':
+          description: JWKS
+  /v1/health:
+    get:
+      summary: Process health
+      responses:
+        '200':
+          description: OK
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

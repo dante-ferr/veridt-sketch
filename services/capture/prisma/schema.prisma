@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ContentRecord {
+  id            String    @id
+  publicId      String    @unique @map("public_id")
+  accountId     String    @map("account_id")
+  fullName      String    @map("full_name")
+  email         String
+  title         String
+  url           String
+  captureKind   String    @map("capture_kind")
+  state         String
+  traceId       String    @map("trace_id")
+  startedAt     DateTime? @map("started_at")
+  finishedAt    DateTime? @map("finished_at")
+  failureReason String?   @map("failure_reason")
+  manifestHash  String?   @map("manifest_hash")
+  manifestKey   String?   @map("manifest_key")
+  signature     String?
+  sessionId     String?   @map("session_id")
+  createdAt     DateTime  @map("created_at")
+
+  @@index([accountId, createdAt])
+  @@map("content_records")
+}
+
+model PublicIdSequence {
+  year Int @id
+  last Int
+
+  @@map("public_id_sequences")
+}
+
+model Outbox {
+  id        String   @id
+  type      String
+  payload   Json
+  createdAt DateTime @map("created_at")
+
+  @@map("outbox")
+}
+
+model ProcessedCommand {
+  id          String   @id
+  type        String
+  processedAt DateTime @map("processed_at")
+
+  @@map("processed_commands")
+}

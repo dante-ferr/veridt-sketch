@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model RecordView {
+  id           String    @id
+  publicId     String    @unique @map("public_id")
+  accountId    String    @map("account_id")
+  fullName     String    @map("full_name")
+  title        String
+  url          String
+  captureKind  String    @map("capture_kind")
+  state        String
+  startedAt    DateTime? @map("started_at")
+  finishedAt   DateTime? @map("finished_at")
+  manifestHash String?   @map("manifest_hash")
+  manifestKey  String?   @map("manifest_key")
+  signature    String?
+  files        Json      @default("[]")
+  traceId      String    @map("trace_id")
+  createdAt    DateTime  @map("created_at")
+
+  @@index([accountId, createdAt])
+  @@map("record_views")
+}
+
+model AuditEvent {
+  id         String   @id
+  action     String
+  actorId    String   @map("actor_id")
+  recordId   String?  @map("record_id")
+  traceId    String   @map("trace_id")
+  occurredAt DateTime @map("occurred_at")
+  detail     Json
+
+  @@map("audit_events")
+}
+
+model ProcessedEvent {
+  id          String   @id
+  type        String
+  processedAt DateTime @map("processed_at")
+
+  @@map("processed_events")
+}
+
+model Artifact {
+  id         String   @id
+  recordId   String   @map("record_id")
+  kind       String
+  storageKey String   @map("storage_key")
+  createdAt  DateTime @map("created_at")
+
+  @@unique([recordId, kind])
+  @@map("artifacts")
+}

@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String          @id
+  email             String          @unique
+  fullName          String          @map("full_name")
+  passwordHash      String          @map("password_hash")
+  emailConfirmedAt  DateTime?       @map("email_confirmed_at")
+  failedLogins      Int             @default(0) @map("failed_logins")
+  lockedUntil       DateTime?       @map("locked_until")
+  profile           String
+  createdAt         DateTime        @map("created_at")
+  lawyer            Lawyer?
+  commonUser        CommonUser?
+  cpfDocument       CpfDocument?
+  tokens            OneTimeToken[]
+  sessions          Session[]
+
+  @@map("accounts")
+}
+
+model Lawyer {
+  accountId      String @id @map("account_id")
+  cpfCiphertext  String @map("cpf_ciphertext")
+  oabCiphertext  String @map("oab_ciphertext")
+  account        Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("lawyers")
+}
+
+model CommonUser {
+  accountId     String  @id @map("account_id")
+  cpfCiphertext String  @map("cpf_ciphertext")
+  account       Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("common_users")
+}
+
+model CpfDocument {
+  hmac      String  @id
+  accountId String  @unique @map("account_id")
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("cpf_documents")
+}
+
+model OneTimeToken {
+  id         String    @id
+  accountId  String    @map("account_id")
+  purpose    String
+  tokenHmac  String    @unique @map("token_hmac")
+  expiresAt  DateTime  @map("expires_at")
+  usedAt     DateTime? @map("used_at")
+  createdAt  DateTime  @map("created_at")
+  account    Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId, purpose, createdAt])
+  @@map("one_time_tokens")
+}
+
+model Session {
+  id          String    @id
+  accountId   String    @map("account_id")
+  refreshHmac String    @unique @map("refresh_hmac")
+  expiresAt   DateTime  @map("expires_at")
+  revokedAt   DateTime? @map("revoked_at")
+  account     Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Outbox {
+  id         String   @id
+  type       String
+  version    Int
+  occurredAt DateTime @map("occurred_at")
+  payload    Json
+  createdAt  DateTime @map("created_at")
+
+  @@map("outbox")
+}

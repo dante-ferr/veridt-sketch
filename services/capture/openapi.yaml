@@ -1,0 +1,46 @@
+openapi: 3.0.3
+info:
+  title: Capture
+  version: 0.1.0
+  description: Content records, manifest signature, and capture state.
+servers:
+  - url: https://localhost:8443
+paths:
+  /v1/captures:
+    post:
+      summary: Start a screenshot or navigation video
+      responses:
+        '201':
+          description: Record created after a credit reservation
+        '409':
+          description: Credit reservation is blocked until ADR-003
+  /v1/captures/{id}:
+    get:
+      summary: Read the capture status owned by the signed-in user
+      responses:
+        '200':
+          description: Current state
+  /v1/captures/{id}/cancel:
+    post:
+      summary: Cancel a queued or running capture
+      responses:
+        '200':
+          description: Cancelled
+  /v1/captures/{id}/conclude:
+    post:
+      summary: Ask the worker to finish a navigation video
+      responses:
+        '202':
+          description: Conclude requested
+  /v1/capture/signing-key:
+    get:
+      summary: Public key that verifies manifest signatures
+      responses:
+        '200':
+          description: Ed25519 public key
+  /v1/health:
+    get:
+      summary: Health
+      responses:
+        '200':
+          description: OK

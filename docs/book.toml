@@ -1,0 +1,8 @@
+[book]
+authors = ["dante-ferr"]
+language = "pt"
+src = "src"
+title = "Veridit"
+
+[output.html]
+git-repository-url = "https://github.com/dante-ferr/veridt"

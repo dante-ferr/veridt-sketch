@@ -1,0 +1,79 @@
+export class ApiError extends Error {
+  constructor(
+    readonly status: number,
+    readonly code: string,
+    message: string,
+  ) {
+    super(message)
+  }
+}
+
+const copy: Record<string, string> = {
+  password_mismatch: 'As senhas não conferem.',
+  password_too_short: 'A senha precisa ter no mínimo 8 caracteres.',
+  terms_required: 'Aceite os termos de uso e a política de privacidade.',
+  invalid_name: 'Informe o nome completo.',
+  invalid_email: 'Informe um e-mail válido.',
+  invalid_cpf: 'Informe um CPF válido.',
+  invalid_oab: 'Informe a OAB no formato UF 000000.',
+  email_in_use: 'Já existe uma conta com este e-mail.',
+  cpf_in_use: 'Já existe uma conta com este CPF.',
+  invalid_credentials: 'E-mail ou senha inválidos.',
+  email_not_confirmed: 'Confirme o e-mail antes de entrar.',
+  account_locked: 'Após 5 tentativas sem sucesso, o acesso fica bloqueado por 15 minutos.',
+  invalid_token: 'Link inválido ou expirado.',
+  unauthenticated: 'Faça login para continuar.',
+  invalid_input: 'Revise os campos do formulário.',
+  too_many_requests: 'Muitas tentativas. Espere um minuto e tente de novo.',
+  unavailable: 'Não foi possível falar com o servidor.',
+  credit_reservation_blocked: 'A reserva de crédito está bloqueada até a ADR-003. O registro não começou.',
+  blocked_url: 'Use um endereço público em http ou https. Endereços internos estão bloqueados.',
+  invalid_title: 'Informe o título do registro.',
+  invalid_state: 'Este registro não aceita mais essa ação.',
+  record_not_concluded: 'Só um registro concluído gera relatório e zip.',
+  not_found: 'Registro não encontrado.',
+  purge_pending_adr_007: 'A exclusão da evidência fica para a ADR-007.',
+}
+
+export function userMessage(error: unknown): string {
+  if (error instanceof ApiError) return copy[error.code] ?? error.message
+  return 'Não foi possível falar com o servidor.'
+}
+
+export async function api<T>(
+  path: string,
+  options: { method?: string; body?: unknown; token?: string } = {},
+): Promise<T> {
+  const headers: Record<string, string> = {}
+  if (options.body !== undefined) headers['content-type'] = 'application/json'
+  if (options.token) headers.authorization = `Bearer ${options.token}`
+  let response: Response
+  try {
+    response = await fetch(path, {
+      method: options.method ?? 'GET',
+      headers,
+      body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+    })
+  } catch {
+    throw new ApiError(0, 'unavailable', copy.unavailable ?? '')
+  }
+  if (response.status === 204) return undefined as T
+  const payload = (await response.json().catch(() => null)) as { error?: string; message?: string } | null
+  if (!response.ok) {
+    const code = payload?.error ?? 'unavailable'
+    throw new ApiError(response.status, code, copy[code] ?? payload?.message ?? 'Não foi possível concluir a operação.')
+  }
+  return payload as T
+}
+
+export function maskCpf(value: string): string {
+  const digits = value.replace(/\D/g, '').slice(0, 11)
+  const parts = [digits.slice(0, 3), digits.slice(3, 6), digits.slice(6, 9), digits.slice(9, 11)]
+  let masked = parts[0] ?? ''
+  if (parts[1]) masked += `.${parts[1]}`
+  if (parts[2]) masked += `.${parts[2]}`
+  if (parts[3]) masked += `-${parts[3]}`
+  return masked
+}
+
+export const refreshStorageKey = 'veridit.refresh'

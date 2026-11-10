@@ -1,0 +1,8 @@
+local/
+docs/book/
+node_modules/
+dist/
+generated/
+.env
+*.log
+coverage/

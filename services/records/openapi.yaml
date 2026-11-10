@@ -1,0 +1,40 @@
+openapi: 3.0.3
+info:
+  title: Records
+  version: 0.1.0
+  description: Read model, audit trail, reports, and download links.
+servers:
+  - url: https://localhost:8443
+paths:
+  /v1/records:
+    get:
+      summary: List the signed-in user's records
+      responses:
+        '200':
+          description: One page of records
+  /v1/records/{id}:
+    get:
+      summary: Record details, hashes, and signature
+      responses:
+        '200':
+          description: Details
+  /v1/records/{id}/downloads:
+    post:
+      summary: Create a short-lived download link for the report or the zip
+      responses:
+        '200':
+          description: Link created and written to the audit trail
+        '409':
+          description: The record is not concluded or the package failed verification
+  /v1/records/{id}/purge:
+    post:
+      summary: Refuses deletion until ADR-007
+      responses:
+        '409':
+          description: Purge is not available in this slice
+  /v1/health:
+    get:
+      summary: Health
+      responses:
+        '200':
+          description: OK

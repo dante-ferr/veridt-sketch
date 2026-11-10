@@ -1,0 +1,68 @@
+openapi: 3.0.3
+info:
+  title: Notification
+  version: 0.1.0
+  description: >
+    Sends ConfirmacaoEmailSolicitada and RecuperacaoSenhaSolicitada.
+    Those type strings are the ADR contract. The other message fields are type,
+    version, id, occurredAt, and data. The service consumes RabbitMQ exchange
+    veridit.events. It does not expose a product API through the gateway.
+servers:
+  - url: http://notification:3000
+paths:
+  /v1/health:
+    get:
+      summary: Process health
+      responses:
+        '200':
+          description: OK
+  /v1/session:
+    get:
+      summary: Rejects a call that does not carry a valid access token
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Token accepted
+        '401':
+          description: Token missing or invalid
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    EmailEvent:
+      type: object
+      required: [type, version, id, occurredAt, data]
+      properties:
+        type:
+          type: string
+          enum: [ConfirmacaoEmailSolicitada, RecuperacaoSenhaSolicitada]
+        version:
+          type: integer
+          enum: [1]
+        id:
+          type: string
+          format: uuid
+        occurredAt:
+          type: string
+          format: date-time
+        data:
+          type: object
+          required: [accountId, fullName, email, token, expiresAt]
+          properties:
+            accountId:
+              type: string
+              format: uuid
+            fullName:
+              type: string
+            email:
+              type: string
+              format: email
+            token:
+              type: string
+            expiresAt:
+              type: string
+              format: date-time
