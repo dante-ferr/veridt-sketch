@@ -1,22 +1,86 @@
-/* This media query stays before the .appbar rule, as in the original stylesheet:
-   the later rule overrides align-items here, so the look is unchanged. */
-@media (max-width: 800px) {
-  .appbar { flex-direction: column; align-items: flex-start; }
-}
-
 .shell { min-height: 100vh; }
+
+/* Top bar, per the Figma spec */
 .appbar {
   display: flex;
-  justify-content: space-between;
-  gap: 16px;
   align-items: center;
-  padding: 16px 28px;
-  background: #f3f0e8;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 24px;
+  /* Inset line instead of border-bottom: Figma draws the stroke inside, so the bar stays 68px. */
+  box-shadow: inset 0 -1px 0 var(--color-line);
+  background: var(--color-surface);
 }
-.brand { display: flex; gap: 22px; align-items: center; }
-.brand a { color: #1c2430; font-weight: 700; text-decoration: none; font-size: 20px; }
-.brand nav { display: flex; gap: 16px; }
-.brand nav a { font-size: 15px; font-weight: 600; text-decoration: none; }
-.brand nav a.active { text-decoration: underline; }
-.who { display: flex; gap: 14px; align-items: center; color: #3d4a52; }
-.canvas { width: min(1100px, calc(100% - 48px)); margin: 8px auto 40px; }
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.appbar .wordmark {
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.brand nav {
+  display: flex;
+  gap: 16px;
+}
+
+/* Same look for the current page and the others (Figma has no active or hover state). */
+.brand nav a {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  text-decoration: underline;
+  color: var(--color-seal);
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.who .balance {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--color-muted);
+}
+
+.who .user-name {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--color-ink);
+}
+
+.who button.secondary {
+  min-height: 36px;
+  padding: 0 16px;
+  border: 1px solid var(--color-muted);
+  border-radius: 4px;
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--color-ink);
+}
+
+/* Page content area */
+.canvas {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (max-width: 800px) {
+  .appbar { flex-direction: column; align-items: flex-start; }
+  .brand { flex-wrap: wrap; }
+}

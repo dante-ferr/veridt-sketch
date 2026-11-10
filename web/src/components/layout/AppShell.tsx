@@ -22,8 +22,8 @@ export function AppShell({ children }: { children: ReactNode }) {
           </nav>
         </div>
         <div className="who">
-          <span>{balance}</span>
-          <span>{session.fullName || '…'}</span>
+          <span className="balance">{balance}</span>
+          <span className="user-name">{session.fullName || '…'}</span>
           <button className="secondary" type="button" onClick={() => void session.signOut()} disabled={session.pending}>Sair</button>
         </div>
       </header>
