@@ -1,75 +1,80 @@
-import { FormEvent, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { AuthBrandLockup } from '@/components/auth/AuthBrandLockup'
-import { DevExampleFill, loadDevSamples } from '@/components/dev/DevExampleFill'
-import { api, userMessage } from '@/services/api'
-import type { Profile } from '@/types/auth'
-import { maskCpf } from '@/utils/cpf'
-import './auth.css'
+import { FormEvent, useState } from "react";
+import { Link } from "react-router-dom";
+import { AuthBrandLockup } from "@/components/auth/AuthBrandLockup";
+import {
+  DevExampleFill,
+  loadDevSamples,
+} from "@/components/dev/DevExampleFill";
+import { api, userMessage } from "@/services/api";
+import type { Profile } from "@/types/auth";
+import { maskCpf } from "@/utils/cpf";
+import "./auth.css";
+import "./auth-screen.css";
+import "./RegisterPage.css";
 
 export function RegisterPage() {
-  const [profile, setProfile] = useState<Profile>('lawyer')
-  const [fullName, setFullName] = useState('')
-  const [email, setEmail] = useState('')
-  const [cpf, setCpf] = useState('')
-  const [oab, setOab] = useState('')
-  const [password, setPassword] = useState('')
-  const [passwordConfirmation, setPasswordConfirmation] = useState('')
-  const [acceptedTerms, setAcceptedTerms] = useState(false)
-  const [error, setError] = useState('')
-  const [passwordError, setPasswordError] = useState(false)
-  const [done, setDone] = useState(false)
-  const [pending, setPending] = useState(false)
+  const [profile, setProfile] = useState<Profile>("lawyer");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [oab, setOab] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [error, setError] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+  const [done, setDone] = useState(false);
+  const [pending, setPending] = useState(false);
 
   async function onSubmit(event: FormEvent) {
-    event.preventDefault()
-    setError('')
+    event.preventDefault();
+    setError("");
     if (password !== passwordConfirmation) {
-      setPasswordError(true)
-      return
+      setPasswordError(true);
+      return;
     }
-    setPasswordError(false)
-    setPending(true)
+    setPasswordError(false);
+    setPending(true);
     try {
-      await api('/v1/accounts', {
-        method: 'POST',
+      await api("/v1/accounts", {
+        method: "POST",
         body: {
           profile,
           fullName,
           email,
-          cpf: cpf.replace(/\D/g, ''),
-          oab: profile === 'lawyer' ? oab : undefined,
+          cpf: cpf.replace(/\D/g, ""),
+          oab: profile === "lawyer" ? oab : undefined,
           password,
           passwordConfirmation,
           acceptedTerms,
         },
-      })
-      setDone(true)
+      });
+      setDone(true);
     } catch (caught) {
-      setError(userMessage(caught))
+      setError(userMessage(caught));
     } finally {
-      setPending(false)
+      setPending(false);
     }
   }
 
   async function fillExample() {
-    const samples = await loadDevSamples()
-    if (!samples) return
-    const sample = samples.registrationSample(profile)
-    setFullName(sample.fullName)
-    setEmail(sample.email)
-    setCpf(sample.cpf)
-    setOab(sample.oab)
-    setPassword(sample.password)
-    setPasswordConfirmation(sample.password)
-    setAcceptedTerms(true)
-    setPasswordError(false)
+    const samples = await loadDevSamples();
+    if (!samples) return;
+    const sample = samples.registrationSample(profile);
+    setFullName(sample.fullName);
+    setEmail(sample.email);
+    setCpf(sample.cpf);
+    setOab(sample.oab);
+    setPassword(sample.password);
+    setPasswordConfirmation(sample.password);
+    setAcceptedTerms(true);
+    setPasswordError(false);
   }
 
   return (
-    <main className="page">
+    <main className="page auth-screen register">
       <AuthBrandLockup />
-      <form className="card wide" onSubmit={onSubmit} style={{ marginTop: 28 }}>
+      <form className="card wide" onSubmit={onSubmit}>
         {done ? (
           <>
             <h2>Verifique seu e-mail</h2>
@@ -89,44 +94,49 @@ export function RegisterPage() {
                 {error}
               </p>
             ) : null}
-            <p className="label">Tipo de conta</p>
-            <div className="types">
-              <label
-                className={profile === 'lawyer' ? 'type selected' : 'type'}
-              >
-                <input
-                  type="radio"
-                  name="profile"
-                  checked={profile === 'lawyer'}
-                  onChange={() => setProfile('lawyer')}
-                />
-                <span>
-                  <strong>Advogado</strong>
-                  Informe o número da OAB.
-                </span>
-              </label>
-              <label
-                className={profile === 'common_user' ? 'type selected' : 'type'}
-              >
-                <input
-                  type="radio"
-                  name="profile"
-                  checked={profile === 'common_user'}
-                  onChange={() => setProfile('common_user')}
-                />
-                <span>
-                  <strong>Usuário comum</strong>
-                  Pessoa física, sem OAB.
-                </span>
-              </label>
+            <div className="profile-field">
+              <p className="label">Tipo de conta</p>
+              <div className="types">
+                <label
+                  className={profile === "lawyer" ? "type selected" : "type"}
+                >
+                  <input
+                    type="radio"
+                    name="profile"
+                    checked={profile === "lawyer"}
+                    onChange={() => setProfile("lawyer")}
+                  />
+                  <span>
+                    <strong>Advogado</strong>
+                    Informe o número da OAB.
+                  </span>
+                </label>
+                <label
+                  className={
+                    profile === "common_user" ? "type selected" : "type"
+                  }
+                >
+                  <input
+                    type="radio"
+                    name="profile"
+                    checked={profile === "common_user"}
+                    onChange={() => setProfile("common_user")}
+                  />
+                  <span>
+                    <strong>Usuário comum</strong>
+                    Pessoa física, sem OAB.
+                  </span>
+                </label>
+              </div>
             </div>
-            <div className="field" style={{ marginTop: 16 }}>
+            <div className="field">
               <label htmlFor="full-name">Nome completo</label>
               <input
                 id="full-name"
                 required
                 value={fullName}
                 onChange={(event) => setFullName(event.target.value)}
+                placeholder="Ana Ribeiro"
               />
             </div>
             <div className="field">
@@ -156,7 +166,7 @@ export function RegisterPage() {
                 />
                 <p className="hint">Somente números.</p>
               </div>
-              {profile === 'lawyer' ? (
+              {profile === "lawyer" ? (
                 <div className="field">
                   <label htmlFor="oab">Número da OAB</label>
                   <input
@@ -178,6 +188,7 @@ export function RegisterPage() {
                 minLength={8}
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
+                placeholder="••••••••"
               />
               <p className="hint">Mínimo de 8 caracteres.</p>
             </div>
@@ -185,14 +196,15 @@ export function RegisterPage() {
               <label htmlFor="confirm-password">Confirmar senha</label>
               <input
                 id="confirm-password"
-                className={passwordError ? 'invalid' : undefined}
+                className={passwordError ? "invalid" : undefined}
                 type="password"
                 required
                 value={passwordConfirmation}
                 onChange={(event) => {
-                  setPasswordConfirmation(event.target.value)
-                  setPasswordError(false)
+                  setPasswordConfirmation(event.target.value);
+                  setPasswordError(false);
                 }}
+                placeholder="••••••••"
               />
               {passwordError ? (
                 <p className="error" role="alert">
@@ -225,5 +237,5 @@ export function RegisterPage() {
         são pedidos apenas na compra de créditos.
       </p>
     </main>
-  )
+  );
 }

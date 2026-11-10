@@ -4,6 +4,8 @@
   --color-line: #D6D2C8;
   --color-surface: #FFFFFF;
   --color-seal: #0F4C5C;
+  --color-seal-tint: #DCEAE9;
+  --color-fail: #B4441C;
 
   color: #1c2430;
   background: #f3f0e8;
