@@ -1,0 +1,56 @@
+.brand-lockup { margin: 0 0 8px; line-height: 1; }
+
+.subtitle {
+  margin: 8px 0 28px;
+  color: #5c6770;
+  text-align: center;
+}
+
+.card {
+  width: min(440px, 100%);
+  background: #fff;
+  border: 1px solid #e7e2d8;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(40, 36, 20, 0.04);
+  padding: 28px 32px 24px;
+}
+
+.card.wide { width: min(640px, 100%); }
+
+.check { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; font-weight: 400; }
+
+.check input { margin-top: 3px; }
+
+.below {
+  margin: 22px 0 0;
+  text-align: center;
+}
+
+.fine {
+  max-width: 640px;
+  margin: 28px 0 0;
+  color: #6b7280;
+  font-size: 13px;
+  text-align: center;
+}
+
+.pair {
+  width: min(920px, 100%);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 28px;
+}
+
+.topbar {
+  width: min(440px, 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 800px) {
+  .pair { grid-template-columns: 1fr; }
+  .card { padding: 22px 18px; }
+}

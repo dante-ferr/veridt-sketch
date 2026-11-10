@@ -1,4 +1,5 @@
-import logoUrl from './assets/veridt-logo.svg'
+import logoUrl from '@/assets/veridt-logo.svg'
+import './Wordmark.css'
 
 export function Wordmark() {
   return (

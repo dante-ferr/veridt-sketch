@@ -1,0 +1,10 @@
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1;
+  color: #0A4550;
+}
+.wordmark .mark { height: 40px; width: 40px; display: block; flex: none; }
+.wordmark .mark-name { font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+.logo-link { display: inline-flex; align-items: center; line-height: 1; text-decoration: none; }

@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react'
 
 const ExampleFillButton = import.meta.env.DEV
-  ? lazy(() => import('./dev/example-fill').then((module) => ({ default: module.ExampleFillButton })))
+  ? lazy(() => import('@/dev/example-fill').then((module) => ({ default: module.ExampleFillButton })))
   : null
 
 export function DevExampleFill({ onClick }: { onClick: () => void }) {
@@ -18,5 +18,5 @@ export function DevExampleFill({ onClick }: { onClick: () => void }) {
 
 export function loadDevSamples() {
   if (!import.meta.env.DEV) return Promise.resolve(null)
-  return import('./dev/example-fill')
+  return import('@/dev/example-fill')
 }

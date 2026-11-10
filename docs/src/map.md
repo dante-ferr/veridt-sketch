@@ -22,6 +22,22 @@ Onde o código desta fatia fica e o que o Compose sobe.
 
 O domínio não importa Nest, Prisma nem Fastify. Cada serviço usa só o próprio schema: `identity`, `notification`, `capture`, `records` e `payments`.
 
+## Organização do `web/src`
+
+| Pasta | O que guarda |
+| :--- | :--- |
+| `app` | Rotas (`App.tsx`) |
+| `pages/<área>` | Uma tela por arquivo: `auth`, `records`, `account`, `credits`. O CSS próprio da área fica ao lado (`auth.css`, `records.css`, `credits.css`) |
+| `components` | Peças reutilizáveis. `layout/AppShell` é a moldura da área logada; `ui` tem peças genéricas; `<área>` tem as de uma área só |
+| `hooks` | `useSession`, `useCreditBalance` e outros hooks |
+| `services` | Cliente HTTP (`api.ts`) e guarda dos tokens (`session-store.ts`) |
+| `utils` | Funções puras: formatação de data e de valor, máscara de CPF, rótulos de estado |
+| `types` | Tipos das respostas da API |
+| `styles` | CSS global: tokens, base, formulários, botões e badges |
+| `dev` | Dados de exemplo, carregados só no modo Vite |
+
+Imports entre pastas usam o alias `@/` (`@/hooks/useSession`), configurado em `web/tsconfig.json` e `web/vite.config.ts`. As classes CSS são globais; o arquivo de cada área só agrupa as regras dela.
+
 ## Interface local
 
 Dois modos. Os comandos estão no README.

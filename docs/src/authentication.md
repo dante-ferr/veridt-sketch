@@ -34,7 +34,7 @@ A identidade grava o evento e o publica na exchange `veridit.events`. A notifica
 | Bloqueio na 5ª falha | `services/identity/src/domain/login.test.ts` |
 | Access token de 15 minutos | `services/identity/src/domain/access-token.test.ts` e `packages/auth/src/verify-access-token.test.ts` |
 | Refresh revogado não renova | `services/identity/src/domain/refresh.test.ts` |
-| 401 autenticado renova uma vez e repete; 403 e 429 não encerram a sessão | `web/src/api.test.ts` |
+| 401 autenticado renova uma vez e repete; 403 e 429 não encerram a sessão | `web/src/services/api.test.ts` |
 | Rotas públicas explícitas | `gateway/src/routes.test.ts` |
 
 Rode com `npm test`.

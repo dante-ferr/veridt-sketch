@@ -1,0 +1,11 @@
+.badge { border: 1px solid #c5ced6; border-radius: 999px; padding: 2px 8px; font-size: 12px; font-weight: 700; }
+
+/* Capture states */
+.badge.CONCLUIDO { color: #0f6e64; border-color: #0f6e64; }
+.badge.EM_ANDAMENTO, .badge.NA_FILA { color: #9a6b12; border-color: #c9a15b; }
+.badge.FALHOU { color: #9a3412; border-color: #c2410c; }
+
+/* Payment states */
+.badge.PENDENTE { color: #9a6b12; border-color: #c9a15b; }
+.badge.APROVADO { color: #0f6e64; border-color: #0f6e64; }
+.badge.RECUSADO, .badge.EXPIRADO, .badge.ESTORNADO { color: #9a3412; border-color: #c2410c; }

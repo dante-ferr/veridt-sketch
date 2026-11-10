@@ -1,6 +1,6 @@
 import { useEffect, useSyncExternalStore } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { api, ApiError, refreshAccessToken, userMessage } from './api'
+import { api, ApiError, refreshAccessToken, userMessage } from '@/services/api'
 import {
   accessTokenExpired,
   getSnapshot,
@@ -12,7 +12,7 @@ import {
   setSessionError,
   setSessionPending,
   subscribe,
-} from './session-store'
+} from '@/services/session-store'
 
 export function useSession() {
   const navigate = useNavigate()

@@ -1,7 +1,19 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { BillingPage, CreditsPage, PaymentPage } from './credits'
-import { AccountPage, CaptureProgressPage, NewRecordPage, RecordDetailPage, RecordsPage, SigningKeyPage, VideoSessionPage } from './evidence'
-import { ConfirmEmailPage, ForgotPasswordPage, LoginPage, RegisterPage, ResetPasswordPage } from './pages'
+import { AccountPage } from '@/pages/account/AccountPage'
+import { SigningKeyPage } from '@/pages/account/SigningKeyPage'
+import { ConfirmEmailPage } from '@/pages/auth/ConfirmEmailPage'
+import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage'
+import { LoginPage } from '@/pages/auth/LoginPage'
+import { RegisterPage } from '@/pages/auth/RegisterPage'
+import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage'
+import { BillingPage } from '@/pages/credits/BillingPage'
+import { CreditsPage } from '@/pages/credits/CreditsPage'
+import { PaymentPage } from '@/pages/credits/PaymentPage'
+import { CaptureProgressPage } from '@/pages/records/CaptureProgressPage'
+import { NewRecordPage } from '@/pages/records/NewRecordPage'
+import { RecordDetailPage } from '@/pages/records/RecordDetailPage'
+import { RecordsPage } from '@/pages/records/RecordsPage'
+import { VideoSessionPage } from '@/pages/records/VideoSessionPage'
 
 export function App() {
   return (
