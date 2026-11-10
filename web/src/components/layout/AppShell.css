@@ -1,7 +1,3 @@
-.appbar .wordmark { gap: 8px; }
-.appbar .wordmark .mark { height: 28px; width: 28px; }
-.appbar .wordmark .mark-name { font-size: 20px; }
-
 /* This media query stays before the .appbar rule, as in the original stylesheet:
    the later rule overrides align-items here, so the look is unchanged. */
 @media (max-width: 800px) {

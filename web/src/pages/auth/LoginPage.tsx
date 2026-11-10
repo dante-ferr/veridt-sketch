@@ -1,40 +1,41 @@
-import { FormEvent, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { AuthBrandLockup } from '@/components/auth/AuthBrandLockup'
-import { api, userMessage } from '@/services/api'
-import { saveSession } from '@/services/session-store'
-import './auth.css'
+import { FormEvent, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthBrandLockup } from "@/components/auth/AuthBrandLockup";
+import { api, userMessage } from "@/services/api";
+import { saveSession } from "@/services/session-store";
+import "./auth.css";
+import "./LoginPage.css";
 
 export function LoginPage() {
-  const navigate = useNavigate()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [pending, setPending] = useState(false)
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
 
   async function onSubmit(event: FormEvent) {
-    event.preventDefault()
-    setError('')
-    setPending(true)
+    event.preventDefault();
+    setError("");
+    setPending(true);
     try {
       const tokens = await api<{ accessToken: string; refreshToken: string }>(
-        '/v1/sessions',
+        "/v1/sessions",
         {
-          method: 'POST',
+          method: "POST",
           body: { email, password },
         },
-      )
-      saveSession(tokens.accessToken, tokens.refreshToken)
-      navigate('/records')
+      );
+      saveSession(tokens.accessToken, tokens.refreshToken);
+      navigate("/records");
     } catch (caught) {
-      setError(userMessage(caught))
+      setError(userMessage(caught));
     } finally {
-      setPending(false)
+      setPending(false);
     }
   }
 
   return (
-    <main className="page">
+    <main className="page login">
       <AuthBrandLockup />
       <p className="subtitle">
         Registro de evidências digitais com hash, data e hora verificáveis.
@@ -64,6 +65,7 @@ export function LoginPage() {
             id="password"
             type="password"
             autoComplete="current-password"
+            placeholder="••••••••"
             required
             value={password}
             onChange={(event) => setPassword(event.target.value)}
@@ -84,5 +86,5 @@ export function LoginPage() {
         Ainda não tem conta? <Link to="/register">Cadastre-se</Link>
       </p>
     </main>
-  )
+  );
 }

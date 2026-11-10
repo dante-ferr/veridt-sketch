@@ -1,7 +1,13 @@
 :root {
+  --color-ink: #1B2430;
+  --color-muted: #5B6573;
+  --color-line: #D6D2C8;
+  --color-surface: #FFFFFF;
+  --color-seal: #0F4C5C;
+
   color: #1c2430;
   background: #f3f0e8;
-  font-family: Inter, "Segoe UI", sans-serif;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
   font-size: 16px;
   line-height: 1.45;
 }
