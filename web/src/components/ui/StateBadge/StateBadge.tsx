@@ -1,3 +1,5 @@
+import "./StateBadge.css";
+
 /**
  * State pill: colored dot + mono code, and an optional " · label" ("● PENDENTE · Pendente").
  * `state` is a payment or capture state; colors live in styles/state-badge.css.

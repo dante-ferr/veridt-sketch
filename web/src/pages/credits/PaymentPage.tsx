@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
+import { Button, ButtonAnchor, Card, Heading, Hint, Text } from '@/components/ui'
 import { ProviderDown } from '@/components/credits/ProviderDown'
 import { Steps } from '@/components/credits/Steps'
 import { PaymentStateBadge } from '@/components/credits/PaymentStateBadge'
@@ -79,7 +80,7 @@ export function PaymentPage() {
   return (
     <AppShell>
       <div className="credits-page payment-page">
-        <h2>Pagamento</h2>
+        <Heading size="page" level="h2">Pagamento</Heading>
         <Steps current={3} />
         {error ? <p className="alert" role="alert">{error}</p> : null}
         {order ? (
@@ -90,14 +91,14 @@ export function PaymentPage() {
             </div>
             <div className="pay-grid">
               {tab === 'pix' ? (
-                <section className="pay-card">
+                <Card className="pay-card">
                   <div className="qr">QR Code gerado pelo provedor de pagamento</div>
                   <div className="pix-content">
                     <div className="pix-status">
                       <PaymentStateBadge state={order.state} label={order.state === 'PENDENTE' ? 'Aguardando pagamento' : undefined} />
                       {order.state === 'PENDENTE' ? <span className="pix-expires">Expira em {left}</span> : null}
                     </div>
-                    <p className="pix-instruction">Abra o app do seu banco, escolha pagar com Pix e leia o QR Code, ou cole o código abaixo.</p>
+                    <Text>Abra o app do seu banco, escolha pagar com Pix e leia o QR Code, ou cole o código abaixo.</Text>
                     <div className="pix-box">
                       <div className="pix-box-head">
                         <strong>Pix copia e cola</strong>
@@ -105,36 +106,36 @@ export function PaymentPage() {
                       </div>
                       <p className="pix-code">{order.pixCopyPaste}</p>
                     </div>
-                    <p className="pix-note">Os créditos entram no saldo assim que o provedor confirmar o pagamento. Você também receberá um e-mail de confirmação.</p>
+                    <Hint>Os créditos entram no saldo assim que o provedor confirmar o pagamento. Você também receberá um e-mail de confirmação.</Hint>
                     {order.testConfirmation && order.state === 'PENDENTE' ? (
-                      <button className="primary pay-test" type="button" disabled={pending} onClick={() => void confirmTest()}>Confirmar pagamento de teste</button>
+                      <Button className="pay-test" disabled={pending} onClick={() => void confirmTest()}>Confirmar pagamento de teste</Button>
                     ) : null}
                   </div>
-                </section>
+                </Card>
               ) : (
-                <section className="pay-card checkout">
+                <Card className="pay-card checkout">
                   <div className="pix-content">
                     <div className="pix-status">
                       <PaymentStateBadge state={order.state} label={order.state === 'PENDENTE' ? 'Aguardando pagamento' : undefined} />
                     </div>
-                    <p className="pix-instruction">Você será levado ao checkout do Mercado Pago e voltará ao Veridt ao final. O saldo só muda depois da consulta ao provedor.</p>
+                    <Text>Você será levado ao checkout do Mercado Pago e voltará ao Veridt ao final. O saldo só muda depois da consulta ao provedor.</Text>
                     {order.testConfirmation && order.state === 'PENDENTE' ? (
-                      <button className="primary pay-test" type="button" disabled={pending} onClick={() => void confirmTest()}>Confirmar pagamento de teste</button>
+                      <Button className="pay-test" disabled={pending} onClick={() => void confirmTest()}>Confirmar pagamento de teste</Button>
                     ) : null}
                   </div>
-                </section>
+                </Card>
               )}
-              <aside className="panel billing-summary pay-summary">
-                <h3>Resumo</h3>
+              <Card as="aside" className="billing-summary pay-summary">
+                <Heading size="card" level="h3">Resumo</Heading>
                 <div className="summary-line"><span>Pacote</span><strong>{order.packageName}</strong></div>
                 <div className="summary-line"><span>Créditos</span><strong>{order.creditCount}</strong></div>
                 <div className="summary-line total"><span>Total</span><strong>{formatBrl(order.totalCents)}</strong></div>
                 <div className="pay-alternative">
                   <p className="pay-alternative-title">Prefere cartão ou saldo?</p>
-                  <a className="pay-checkout" href={order.checkoutUrl}>Pagar com Mercado Pago</a>
-                  <p className="hint">Você será levado ao checkout do Mercado Pago e voltará ao Veridt ao final.</p>
+                  <ButtonAnchor variant="outline" full href={order.checkoutUrl}>Pagar com Mercado Pago</ButtonAnchor>
+                  <Hint>Você será levado ao checkout do Mercado Pago e voltará ao Veridt ao final.</Hint>
                 </div>
-              </aside>
+              </Card>
             </div>
           </>
         ) : <p>Carregando o pedido.</p>}

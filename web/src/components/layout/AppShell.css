@@ -57,17 +57,6 @@
   color: var(--color-ink);
 }
 
-.who button.secondary {
-  min-height: 36px;
-  padding: 0 16px;
-  border: 1px solid var(--color-muted);
-  border-radius: 4px;
-  background: var(--color-surface);
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 18px;
-  color: var(--color-ink);
-}
 
 /* Page content area */
 .canvas {

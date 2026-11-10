@@ -1,4 +1,4 @@
-/* Login-only styles. Card, fields, row and note come from auth-screen.css. */
+/* Login-only styles. */
 
 .login .subtitle {
   margin: 0;
@@ -17,9 +17,4 @@
   font-weight: 400;
   line-height: 22px;
   color: var(--color-ink);
-}
-
-.login .below a {
-  text-decoration: underline;
-  color: var(--color-seal);
 }

@@ -1,0 +1,22 @@
+.ui-heading {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.ui-heading--page { font-size: 32px; line-height: 40px; }
+.ui-heading--card { font-size: 20px; line-height: 28px; }
+
+/* Page header: title + subtitle, actions on the right */
+.ui-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.ui-page-subtitle {
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--color-muted);
+}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
+import { Button, Card, Heading, Hint, Text } from '@/components/ui'
 import { ProviderDown } from '@/components/credits/ProviderDown'
 import { Steps } from '@/components/credits/Steps'
 import { PaymentStateBadge } from '@/components/credits/PaymentStateBadge'
@@ -47,32 +48,32 @@ export function CreditsPage() {
   return (
     <AppShell>
       <div className="credits-page">
-      <h2>Comprar créditos</h2>
+      <Heading size="page" level="h2">Comprar créditos</Heading>
       <Steps current={1} />
       {error ? <p className="alert" role="alert">{error}</p> : null}
       {error.includes('provedor') ? <ProviderDown /> : null}
       <div className="packages">
         {items.map((item) => (
-          <article key={item.id} className={item.id === selected ? 'package selected' : 'package'}>
+          <Card as="article" key={item.id} className={item.id === selected ? 'package selected' : 'package'}>
             <div className="package-head">
-              <h3>{item.name}</h3>
+              <Heading size="card" level="h3">{item.name}</Heading>
               {item.id === selected ? <span className="selected-tag">Selecionado</span> : null}
             </div>
             <p className="credits-count">{item.creditCount} créditos</p>
-            <p className="package-price">{formatBrl(item.pricePerCreditCents)} por crédito · total {formatBrl(item.totalCents)}</p>
-            <p className="package-description">{item.description}</p>
-            <button className={item.id === selected ? 'primary' : 'secondary'} type="button" onClick={() => {
+            <Text muted>{formatBrl(item.pricePerCreditCents)} por crédito · total {formatBrl(item.totalCents)}</Text>
+            <Text>{item.description}</Text>
+            <Button full variant={item.id === selected ? 'primary' : 'outline'} onClick={() => {
               choose(item.id)
               navigate('/credits/billing')
             }}>
               {item.id === selected ? `Continuar com ${item.name}` : `Escolher ${item.name}`}
-            </button>
-          </article>
+            </Button>
+          </Card>
         ))}
       </div>
-      <p className="packages-note">O preço fica congelado no momento da compra. Cada registro consome 1 crédito.</p>
-      <section className="panel history">
-        <h3>Histórico de compras</h3>
+      <Hint>O preço fica congelado no momento da compra. Cada registro consome 1 crédito.</Hint>
+      <Card className="history">
+        <Heading size="card" level="h3">Histórico de compras</Heading>
         <table className="data-table">
           <thead>
             <tr><th>Data (UTC)</th><th>Pacote</th><th>Créditos</th><th>Forma</th><th>Estado</th></tr>
@@ -90,7 +91,7 @@ export function CreditsPage() {
             {orders.length === 0 ? <tr><td colSpan={5}>Nenhuma compra ainda.</td></tr> : null}
           </tbody>
         </table>
-      </section>
+      </Card>
       {current ? null : null}
       </div>
     </AppShell>

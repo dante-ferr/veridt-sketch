@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
-import { StatusBadge } from '@/components/ui/StatusBadge'
+import { StatusBadge } from '@/components/ui'
 import { useSession } from '@/hooks/useSession'
 import { api, userMessage } from '@/services/api'
 import type { RecordDetail } from '@/types/capture'

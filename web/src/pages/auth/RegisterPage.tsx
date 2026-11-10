@@ -1,6 +1,15 @@
 import { FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
 import { AuthBrandLockup } from "@/components/auth/AuthBrandLockup";
+import {
+  ActionRow,
+  Button,
+  Card,
+  Field,
+  Heading,
+  Input,
+  Text,
+  TextLink,
+} from "@/components/ui";
 import {
   DevExampleFill,
   loadDevSamples,
@@ -74,27 +83,27 @@ export function RegisterPage() {
   return (
     <main className="page auth-screen register">
       <AuthBrandLockup />
-      <form className="card wide" onSubmit={onSubmit}>
+      <Card as="form" className="register-card" onSubmit={onSubmit}>
         {done ? (
           <>
-            <h2>Verifique seu e-mail</h2>
-            <p>
+            <Heading size="page">Verifique seu e-mail</Heading>
+            <Text muted>
               Enviamos um link de confirmação. Abra o e-mail e confirme antes de
               entrar.
-            </p>
+            </Text>
             <p className="below">
-              <Link to="/">Ir para o login</Link>
+              <TextLink to="/">Ir para o login</TextLink>
             </p>
           </>
         ) : (
           <>
-            <h2>Criar conta</h2>
+            <Heading size="page">Criar conta</Heading>
             {error ? (
               <p className="alert" role="alert">
                 {error}
               </p>
             ) : null}
-            <div className="profile-field">
+            <div className="option-group">
               <p className="label">Tipo de conta</p>
               <div className="types">
                 <label
@@ -129,19 +138,17 @@ export function RegisterPage() {
                 </label>
               </div>
             </div>
-            <div className="field">
-              <label htmlFor="full-name">Nome completo</label>
-              <input
+            <Field label="Nome completo" htmlFor="full-name">
+              <Input
                 id="full-name"
                 required
                 value={fullName}
                 onChange={(event) => setFullName(event.target.value)}
                 placeholder="Ana Ribeiro"
               />
-            </div>
-            <div className="field">
-              <label htmlFor="register-email">E-mail</label>
-              <input
+            </Field>
+            <Field label="E-mail" htmlFor="register-email" hint="Enviaremos um link de confirmação para este endereço.">
+              <Input
                 id="register-email"
                 type="email"
                 required
@@ -149,14 +156,10 @@ export function RegisterPage() {
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="nome@exemplo.com.br"
               />
-              <p className="hint">
-                Enviaremos um link de confirmação para este endereço.
-              </p>
-            </div>
+            </Field>
             <div className="split">
-              <div className="field">
-                <label htmlFor="cpf">CPF</label>
-                <input
+              <Field label="CPF" htmlFor="cpf" hint="Somente números.">
+                <Input
                   id="cpf"
                   inputMode="numeric"
                   required
@@ -164,24 +167,21 @@ export function RegisterPage() {
                   onChange={(event) => setCpf(maskCpf(event.target.value))}
                   placeholder="000.000.000-00"
                 />
-                <p className="hint">Somente números.</p>
-              </div>
+              </Field>
               {profile === "lawyer" ? (
-                <div className="field">
-                  <label htmlFor="oab">Número da OAB</label>
-                  <input
+                <Field label="Número da OAB" htmlFor="oab">
+                  <Input
                     id="oab"
                     required
                     value={oab}
                     onChange={(event) => setOab(event.target.value)}
                     placeholder="UF 000000"
                   />
-                </div>
+                </Field>
               ) : null}
             </div>
-            <div className="field">
-              <label htmlFor="new-password">Senha</label>
-              <input
+            <Field label="Senha" htmlFor="new-password" hint="Mínimo de 8 caracteres.">
+              <Input
                 id="new-password"
                 type="password"
                 required
@@ -190,13 +190,15 @@ export function RegisterPage() {
                 onChange={(event) => setPassword(event.target.value)}
                 placeholder="••••••••"
               />
-              <p className="hint">Mínimo de 8 caracteres.</p>
-            </div>
-            <div className="field">
-              <label htmlFor="confirm-password">Confirmar senha</label>
-              <input
+            </Field>
+            <Field
+              label="Confirmar senha"
+              htmlFor="confirm-password"
+              error={passwordError ? "As senhas não conferem." : undefined}
+            >
+              <Input
                 id="confirm-password"
-                className={passwordError ? "invalid" : undefined}
+                invalid={passwordError}
                 type="password"
                 required
                 value={passwordConfirmation}
@@ -206,12 +208,7 @@ export function RegisterPage() {
                 }}
                 placeholder="••••••••"
               />
-              {passwordError ? (
-                <p className="error" role="alert">
-                  As senhas não conferem.
-                </p>
-              ) : null}
-            </div>
+            </Field>
             <label className="check">
               <input
                 type="checkbox"
@@ -223,15 +220,15 @@ export function RegisterPage() {
               </span>
             </label>
             <DevExampleFill onClick={() => void fillExample()} />
-            <div className="row">
-              <Link to="/">Já tenho conta</Link>
-              <button className="primary" type="submit" disabled={pending}>
+            <ActionRow>
+              <TextLink to="/">Já tenho conta</TextLink>
+              <Button type="submit" disabled={pending}>
                 Criar conta
-              </button>
-            </div>
+              </Button>
+            </ActionRow>
           </>
         )}
-      </form>
+      </Card>
       <p className="fine">
         Empresas poderão se cadastrar em uma próxima versão. Telefone e endereço
         são pedidos apenas na compra de créditos.

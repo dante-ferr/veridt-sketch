@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { Wordmark } from '@/components/brand/Wordmark'
+import { Button } from '@/components/ui'
 import { useCreditBalance } from '@/hooks/useCreditBalance'
 import { useSession } from '@/hooks/useSession'
 import './AppShell.css'
@@ -24,7 +25,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="who">
           <span className="balance">{balance}</span>
           <span className="user-name">{session.fullName || '…'}</span>
-          <button className="secondary" type="button" onClick={() => void session.signOut()} disabled={session.pending}>Sair</button>
+          <Button variant="outline" onClick={() => void session.signOut()} disabled={session.pending}>Sair</Button>
         </div>
       </header>
       {session.error ? <p className="alert" role="alert">{session.error}</p> : null}

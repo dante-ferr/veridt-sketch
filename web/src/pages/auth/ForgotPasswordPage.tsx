@@ -1,6 +1,16 @@
 import { FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
 import { AuthBrandLockup } from "@/components/auth/AuthBrandLockup";
+import {
+  ActionRow,
+  Button,
+  Card,
+  Field,
+  Heading,
+  Hint,
+  Input,
+  Text,
+  TextLink,
+} from "@/components/ui";
 import { api, userMessage } from "@/services/api";
 import "./auth.css";
 import "./auth-screen.css";
@@ -28,20 +38,19 @@ export function ForgotPasswordPage() {
     <main className="page auth-screen forgot-password">
       <AuthBrandLockup />
       <div className="pair">
-        <form className="card" onSubmit={onSubmit}>
-          <h2>Recuperar senha</h2>
-          <p>
+        <Card as="form" className="auth-card" onSubmit={onSubmit}>
+          <Heading size="card">Recuperar senha</Heading>
+          <Text muted>
             Informe o e-mail cadastrado. Enviaremos um link de uso único, válido
             por 30 minutos.
-          </p>
+          </Text>
           {error ? (
             <p className="alert" role="alert">
               {error}
             </p>
           ) : null}
-          <div className="field">
-            <label htmlFor="recovery-email">E-mail cadastrado</label>
-            <input
+          <Field label="E-mail cadastrado" htmlFor="recovery-email">
+            <Input
               id="recovery-email"
               type="email"
               required
@@ -49,34 +58,34 @@ export function ForgotPasswordPage() {
               onChange={(event) => setEmail(event.target.value)}
               placeholder="nome@exemplo.com.br"
             />
-          </div>
-          <div className="row">
-            <Link to="/">Voltar ao login</Link>
-            <button className="primary" type="submit" disabled={pending}>
+          </Field>
+          <ActionRow>
+            <TextLink to="/">Voltar ao login</TextLink>
+            <Button type="submit" disabled={pending}>
               Enviar link
-            </button>
-          </div>
-        </form>
+            </Button>
+          </ActionRow>
+        </Card>
 
-        <section className="card">
-          <h2>Verifique seu e-mail</h2>
-          <p>
+        <Card className="auth-card">
+          <Heading size="card">Verifique seu e-mail</Heading>
+          <Text muted>
             Se houver uma conta com este e-mail, você receberá o link em alguns
             minutos.
-          </p>
-          <p className="note">
+          </Text>
+          <Hint>
             Por segurança, a mensagem é a mesma quando o e-mail não está
             cadastrado. O link expira após o primeiro uso.
-          </p>
-          <button
-            className="secondary"
-            type="button"
+          </Hint>
+          <Button
+            variant="outline"
+            className="resend"
             onClick={() => void onSubmit({ preventDefault() {} } as FormEvent)}
             disabled={pending || email.length === 0}
           >
             Reenviar link
-          </button>
-        </section>
+          </Button>
+        </Card>
       </div>
     </main>
   );

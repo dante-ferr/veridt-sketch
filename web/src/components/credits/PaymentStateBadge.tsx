@@ -1,4 +1,4 @@
-import { StateBadge } from '@/components/ui/StateBadge'
+import { StateBadge } from "@/components/ui"
 import type { PaymentState } from '@/types/credits'
 import { paymentStateLabel } from '@/utils/paymentState'
 

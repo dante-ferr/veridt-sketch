@@ -1,0 +1,28 @@
+/* Buttons, also used on links that look like buttons */
+.ui-button {
+  flex: none; /* never squeezed by long text beside it */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ui-button--primary {
+  border: 0;
+  background: var(--color-seal);
+  color: #FFFFFF;
+}
+.ui-button--outline {
+  border: 1px solid var(--color-muted);
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+.ui-button--full { width: 100%; }
+.ui-button:disabled { opacity: 0.5; cursor: default; }

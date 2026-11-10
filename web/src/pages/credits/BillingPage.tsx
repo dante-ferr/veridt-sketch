@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
+import { ActionRow, Button, Card, Field, Heading, Hint, Input, TextLink } from '@/components/ui'
 import { ProviderDown } from '@/components/credits/ProviderDown'
 import { Steps } from '@/components/credits/Steps'
 import { DevExampleFill, loadDevSamples } from '@/components/dev/DevExampleFill'
@@ -92,41 +93,41 @@ export function BillingPage() {
   return (
     <AppShell>
       <div className="credits-page">
-      <h2>Dados de faturamento</h2>
+      <Heading size="page" level="h2">Dados de faturamento</Heading>
       <Steps current={2} />
       {error ? <p className="alert" role="alert">{error}</p> : null}
       {error.includes('provedor') ? <ProviderDown /> : null}
       <form className="billing-grid" onSubmit={(event) => void submit(event)}>
-        <section className="panel billing-form">
-          <h3>Comprador</h3>
-          <label>Nome completo<input value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Ana Ribeiro" required /></label>
+        <Card className="billing-form">
+          <Heading size="card" level="h3">Comprador</Heading>
+          <Field label="Nome completo" htmlFor="billing-full-name"><Input id="billing-full-name" value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Ana Ribeiro" required /></Field>
           <div className="split cols-2">
-            <label>E-mail<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="nome@exemplo.com.br" required /></label>
-            <label>Telefone<input value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="(71) 90000-0000" required /></label>
+            <Field label="E-mail" htmlFor="billing-email"><Input id="billing-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="nome@exemplo.com.br" required /></Field>
+            <Field label="Telefone" htmlFor="billing-phone"><Input id="billing-phone" value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="(71) 90000-0000" required /></Field>
           </div>
-          <label>CPF<input value={cpf} onChange={(event) => setCpf(maskCpf(event.target.value))} inputMode="numeric" placeholder="000.000.000-00" required /></label>
-          <h3>Endereço</h3>
+          <Field label="CPF" htmlFor="billing-cpf"><Input id="billing-cpf" value={cpf} onChange={(event) => setCpf(maskCpf(event.target.value))} inputMode="numeric" placeholder="000.000.000-00" required /></Field>
+          <Heading size="card" level="h3">Endereço</Heading>
           <div className="split narrow-first">
-            <label>CEP<input value={postalCode} onChange={(event) => setPostalCode(event.target.value)} placeholder="00000-000" required /><span className="field-hint">Preenche o endereço.</span></label>
-            <label>Endereço<input value={street} onChange={(event) => setStreet(event.target.value)} placeholder="Rua, avenida" required /></label>
+            <Field label="CEP" htmlFor="billing-postal-code" hint="Preenche o endereço."><Input id="billing-postal-code" value={postalCode} onChange={(event) => setPostalCode(event.target.value)} placeholder="00000-000" required /></Field>
+            <Field label="Endereço" htmlFor="billing-street"><Input id="billing-street" value={street} onChange={(event) => setStreet(event.target.value)} placeholder="Rua, avenida" required /></Field>
           </div>
           <div className="split narrow-first">
-            <label>Número<input value={number} onChange={(event) => setNumber(event.target.value)} placeholder="000" required /></label>
-            <label>Complemento<input value={complement} onChange={(event) => setComplement(event.target.value)} placeholder="Apto, sala" /><span className="field-hint">Opcional.</span></label>
+            <Field label="Número" htmlFor="billing-number"><Input id="billing-number" value={number} onChange={(event) => setNumber(event.target.value)} placeholder="000" required /></Field>
+            <Field label="Complemento" htmlFor="billing-complement" hint="Opcional."><Input id="billing-complement" value={complement} onChange={(event) => setComplement(event.target.value)} placeholder="Apto, sala" /></Field>
           </div>
           <div className="split cols-3">
-            <label>Bairro<input value={district} onChange={(event) => setDistrict(event.target.value)} placeholder="Bairro" required /></label>
-            <label>Cidade<input value={city} onChange={(event) => setCity(event.target.value)} placeholder="Salvador" required /></label>
-            <label>Estado<input value={state} onChange={(event) => setState(event.target.value.toUpperCase().slice(0, 2))} placeholder="UF" required /></label>
+            <Field label="Bairro" htmlFor="billing-district"><Input id="billing-district" value={district} onChange={(event) => setDistrict(event.target.value)} placeholder="Bairro" required /></Field>
+            <Field label="Cidade" htmlFor="billing-city"><Input id="billing-city" value={city} onChange={(event) => setCity(event.target.value)} placeholder="Salvador" required /></Field>
+            <Field label="Estado" htmlFor="billing-state"><Input id="billing-state" value={state} onChange={(event) => setState(event.target.value.toUpperCase().slice(0, 2))} placeholder="UF" required /></Field>
           </div>
           <DevExampleFill onClick={() => void fillExample()} />
-          <div className="row">
-            <Link to="/credits">← Trocar pacote</Link>
-            <button className="primary" type="submit" disabled={pending || !offer}>Ir para o pagamento</button>
-          </div>
-        </section>
-        <aside className="panel billing-summary">
-          <h3>Resumo</h3>
+          <ActionRow divided>
+            <TextLink size="sm" to="/credits">← Trocar pacote</TextLink>
+            <Button type="submit" disabled={pending || !offer}>Ir para o pagamento</Button>
+          </ActionRow>
+        </Card>
+        <Card as="aside" className="billing-summary">
+          <Heading size="card" level="h3">Resumo</Heading>
           {offer ? (
             <>
               <div className="summary-line"><span>Pacote</span><strong>{offer.name}</strong></div>
@@ -135,8 +136,8 @@ export function BillingPage() {
               <div className="summary-line total"><span>Total</span><strong>{formatBrl(offer.totalCents)}</strong></div>
             </>
           ) : <p>Escolha um pacote.</p>}
-          <p className="hint">Telefone e endereço são usados só para o faturamento e ficam no serviço de pagamentos, separado do cadastro.</p>
-        </aside>
+          <Hint>Telefone e endereço são usados só para o faturamento e ficam no serviço de pagamentos, separado do cadastro.</Hint>
+        </Card>
       </form>
       </div>
     </AppShell>

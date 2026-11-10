@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
-import { StateBadge } from '@/components/ui/StateBadge'
+import { Button, ButtonLink, Field, Input, PageHeader, Select, StateBadge, TextLink } from '@/components/ui'
 import { useSession } from '@/hooks/useSession'
 import { api, userMessage } from '@/services/api'
 import type { RecordListItem } from '@/types/capture'
 import { formatIsoUtc } from '@/utils/format'
-import './records.css'
 import './RecordsPage.css'
 
 export function RecordsPage() {
@@ -38,30 +36,26 @@ export function RecordsPage() {
   return (
     <AppShell>
       <div className="records-page">
-      <div className="heading-row">
-        <div>
-          <h2>Registros realizados</h2>
-          <p className="subtitle">Horários em UTC · ordenados pela data de início</p>
-        </div>
-        <Link className="button" to="/records/new">Iniciar registro</Link>
-      </div>
+      <PageHeader
+        title="Registros realizados"
+        subtitle="Horários em UTC · ordenados pela data de início"
+        actions={<ButtonLink to="/records/new">Iniciar registro</ButtonLink>}
+      />
       {error ? <p className="alert" role="alert">{error}</p> : null}
       <div className="filters">
-        <div className="field">
-          <label htmlFor="search-title">Buscar por título</label>
-          <input id="search-title" value={title} placeholder="Ex.: publicação" onChange={(event) => { setTitle(event.target.value); setPage(1) }} />
-        </div>
-        <div className="field">
-          <label htmlFor="search-state">Estado</label>
-          <select id="search-state" value={state} onChange={(event) => { setState(event.target.value); setPage(1) }}>
+        <Field label="Buscar por título" htmlFor="search-title">
+          <Input id="search-title" value={title} placeholder="Ex.: publicação" onChange={(event) => { setTitle(event.target.value); setPage(1) }} />
+        </Field>
+        <Field label="Estado" htmlFor="search-state">
+          <Select id="search-state" value={state} onChange={(event) => { setState(event.target.value); setPage(1) }}>
             <option value="all">Todos</option>
             <option value="NA_FILA">NA_FILA</option>
             <option value="EM_ANDAMENTO">EM_ANDAMENTO</option>
             <option value="CONCLUIDO">CONCLUIDO</option>
             <option value="FALHOU">FALHOU</option>
             <option value="CANCELADO">CANCELADO</option>
-          </select>
-        </div>
+          </Select>
+        </Field>
       </div>
       <table className="data-table records-table">
         <thead>
@@ -78,8 +72,8 @@ export function RecordsPage() {
               <td><StateBadge state={item.state} /></td>
               <td>
                 {item.state === 'NA_FILA' || item.state === 'EM_ANDAMENTO'
-                  ? <Link to={`/captures/${item.id}`}>Acompanhar</Link>
-                  : <Link to={`/records/${item.id}`}>Detalhes</Link>}
+                  ? <TextLink size="sm" to={`/captures/${item.id}`}>Acompanhar</TextLink>
+                  : <TextLink size="sm" to={`/records/${item.id}`}>Detalhes</TextLink>}
               </td>
             </tr>
           ))}
@@ -88,8 +82,8 @@ export function RecordsPage() {
       <div className="pager">
         <span className="pager-count">Mostrando {from}–{to} de {total} registros</span>
         <span className="pager-buttons">
-          <button className="secondary" type="button" disabled={page <= 1} onClick={() => setPage(page - 1)}>Anterior</button>
-          <button className="secondary" type="button" disabled={page * 5 >= total} onClick={() => setPage(page + 1)}>Próxima</button>
+          <Button variant="outline" type="button" disabled={page <= 1} onClick={() => setPage(page - 1)}>Anterior</Button>
+          <Button variant="outline" type="button" disabled={page * 5 >= total} onClick={() => setPage(page + 1)}>Próxima</Button>
         </span>
       </div>
       </div>

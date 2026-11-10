@@ -1,6 +1,16 @@
 import { FormEvent, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthBrandLockup } from "@/components/auth/AuthBrandLockup";
+import {
+  ActionRow,
+  Button,
+  Card,
+  Field,
+  Heading,
+  Hint,
+  Input,
+  TextLink,
+} from "@/components/ui";
 import { api, userMessage } from "@/services/api";
 import { saveSession } from "@/services/session-store";
 import "./auth.css";
@@ -41,16 +51,15 @@ export function LoginPage() {
       <p className="subtitle">
         Registro de evidências digitais com hash, data e hora verificáveis.
       </p>
-      <form className="card" onSubmit={onSubmit}>
-        <h2>Entrar</h2>
+      <Card as="form" className="auth-card" onSubmit={onSubmit}>
+        <Heading size="card">Entrar</Heading>
         {error ? (
           <p className="alert" role="alert">
             {error}
           </p>
         ) : null}
-        <div className="field">
-          <label htmlFor="email">E-mail</label>
-          <input
+        <Field label="E-mail" htmlFor="email">
+          <Input
             id="email"
             type="email"
             autoComplete="username"
@@ -59,10 +68,9 @@ export function LoginPage() {
             onChange={(event) => setEmail(event.target.value)}
             placeholder="nome@exemplo.com.br"
           />
-        </div>
-        <div className="field">
-          <label htmlFor="password">Senha</label>
-          <input
+        </Field>
+        <Field label="Senha" htmlFor="password">
+          <Input
             id="password"
             type="password"
             autoComplete="current-password"
@@ -71,20 +79,22 @@ export function LoginPage() {
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
-        </div>
-        <div className="row">
-          <Link to="/forgot-password">Esqueci minha senha</Link>
-          <button className="primary" type="submit" disabled={pending}>
+        </Field>
+        <ActionRow>
+          <TextLink to="/forgot-password">Esqueci minha senha</TextLink>
+          <Button type="submit" disabled={pending}>
             Entrar
-          </button>
-        </div>
-        <p className="note">
+          </Button>
+        </ActionRow>
+        <Hint>
           Após 5 tentativas sem sucesso, o acesso fica bloqueado por alguns
           minutos.
-        </p>
-      </form>
+        </Hint>
+      </Card>
       <p className="below">
-        Ainda não tem conta? <Link to="/register">Cadastre-se</Link>
+        Ainda não tem conta? <TextLink size="md" to="/register">
+          Cadastre-se
+        </TextLink>
       </p>
     </main>
   );

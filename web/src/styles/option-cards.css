@@ -1,0 +1,76 @@
+/* Option cards from the Figma: a label + two radio cards side by side
+   ("Tipo de conta" on sign-up, "Tipo de captura" on new record). */
+.option-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.option-group .label {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--color-ink);
+}
+
+.option-group .types {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: 8px;
+}
+
+.option-group .type {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--color-muted);
+  border-radius: 4px;
+  background: var(--color-surface);
+}
+
+.option-group .type.selected {
+  border: 2px solid var(--color-seal);
+  background: var(--color-seal-tint);
+}
+
+.option-group .type strong {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 22px;
+  color: var(--color-ink);
+}
+
+.option-group .type span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--color-muted);
+}
+
+/* Radio */
+.option-group .type input[type="radio"] {
+  appearance: none;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin: 3px 0 0;
+  border: 1px solid var(--color-muted);
+  border-radius: 50%;
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.option-group .type input[type="radio"]:checked { border: 5px solid var(--color-seal); }
+
+.option-group .type input:focus-visible { outline: 2px solid var(--color-seal); outline-offset: 2px; }
+
+@media (max-width: 800px) {
+  .option-group .types { grid-template-columns: 1fr; }
+}

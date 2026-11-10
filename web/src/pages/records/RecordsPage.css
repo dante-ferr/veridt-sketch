@@ -1,5 +1,5 @@
-/* Registros realizados, per the Figma spec. Table and state badge come from
-   styles/table.css and styles/state-badge.css. */
+/* Registros realizados, per the Figma spec. Header, fields and buttons come from
+   components/ui; table and state badge from styles/table.css. */
 
 .records-page {
   display: flex;
@@ -9,43 +9,6 @@
 
 .records-page > .alert { margin: 0; }
 
-/* Title + "Iniciar registro" */
-.records-page .heading-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.records-page h2 {
-  margin: 0;
-  font-size: 32px;
-  font-weight: 600;
-  line-height: 40px;
-  color: var(--color-ink);
-}
-
-.records-page .subtitle {
-  margin: 4px 0 0;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 16px;
-  color: var(--color-muted);
-}
-
-.records-page .heading-row a.button {
-  display: inline-flex;
-  align-items: center;
-  min-height: 36px;
-  padding: 0 16px;
-  border-radius: 4px;
-  background: var(--color-seal);
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 18px;
-  color: #FFFFFF;
-}
-
 /* Filters: search fills the row, state is 200px */
 .records-page .filters {
   display: grid;
@@ -53,44 +16,6 @@
   gap: 16px;
   margin: 0;
 }
-
-.records-page .field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin: 0;
-}
-
-.records-page .field label {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 18px;
-  color: var(--color-ink);
-}
-
-.records-page .field input,
-.records-page .field select {
-  width: 100%;
-  height: 36px;
-  min-height: 36px;
-  padding: 0 8px;
-  border: 1px solid var(--color-muted);
-  border-radius: 2px;
-  background: var(--color-surface);
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 22px;
-  color: var(--color-ink);
-}
-
-/* No arrow on the state select, as in the Figma */
-.records-page .field select {
-  appearance: none;
-  cursor: pointer;
-}
-
-.records-page .field input::placeholder { color: var(--color-muted); }
 
 /* Table cells specific to records */
 .records-table tbody tr:hover td { background: var(--color-seal-tint); }
@@ -112,14 +37,7 @@
   color: var(--color-muted);
 }
 
-.records-table td a {
-  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 18px;
-  text-decoration: underline;
-  color: var(--color-seal);
-}
+.records-table td a { font-family: "IBM Plex Sans", "Segoe UI", sans-serif; }
 
 /* Pagination */
 .records-page .pager {
@@ -139,23 +57,6 @@
 .records-page .pager-buttons {
   display: flex;
   gap: 8px;
-}
-
-.records-page .pager-buttons button {
-  min-height: 36px;
-  padding: 0 16px;
-  border: 1px solid var(--color-muted);
-  border-radius: 4px;
-  background: var(--color-surface);
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 18px;
-  color: var(--color-ink);
-}
-
-.records-page .pager-buttons button:disabled {
-  opacity: 0.5;
-  cursor: default;
 }
 
 @media (max-width: 800px) {
