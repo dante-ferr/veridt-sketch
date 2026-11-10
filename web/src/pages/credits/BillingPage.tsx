@@ -91,52 +91,54 @@ export function BillingPage() {
 
   return (
     <AppShell>
+      <div className="credits-page">
       <h2>Dados de faturamento</h2>
       <Steps current={2} />
       {error ? <p className="alert" role="alert">{error}</p> : null}
       {error.includes('provedor') ? <ProviderDown /> : null}
       <form className="billing-grid" onSubmit={(event) => void submit(event)}>
-        <section className="panel">
+        <section className="panel billing-form">
           <h3>Comprador</h3>
-          <label>Nome completo<input value={fullName} onChange={(event) => setFullName(event.target.value)} required /></label>
-          <div className="split">
-            <label>E-mail<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required /></label>
+          <label>Nome completo<input value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Ana Ribeiro" required /></label>
+          <div className="split cols-2">
+            <label>E-mail<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="nome@exemplo.com.br" required /></label>
             <label>Telefone<input value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="(71) 90000-0000" required /></label>
           </div>
-          <label>CPF<input value={cpf} onChange={(event) => setCpf(maskCpf(event.target.value))} inputMode="numeric" required /></label>
+          <label>CPF<input value={cpf} onChange={(event) => setCpf(maskCpf(event.target.value))} inputMode="numeric" placeholder="000.000.000-00" required /></label>
           <h3>Endereço</h3>
-          <div className="split">
-            <label>CEP<input value={postalCode} onChange={(event) => setPostalCode(event.target.value)} placeholder="00000-000" required /></label>
-            <label>Endereço<input value={street} onChange={(event) => setStreet(event.target.value)} required /></label>
+          <div className="split narrow-first">
+            <label>CEP<input value={postalCode} onChange={(event) => setPostalCode(event.target.value)} placeholder="00000-000" required /><span className="field-hint">Preenche o endereço.</span></label>
+            <label>Endereço<input value={street} onChange={(event) => setStreet(event.target.value)} placeholder="Rua, avenida" required /></label>
           </div>
-          <div className="split">
-            <label>Número<input value={number} onChange={(event) => setNumber(event.target.value)} required /></label>
-            <label>Complemento<input value={complement} onChange={(event) => setComplement(event.target.value)} /></label>
+          <div className="split narrow-first">
+            <label>Número<input value={number} onChange={(event) => setNumber(event.target.value)} placeholder="000" required /></label>
+            <label>Complemento<input value={complement} onChange={(event) => setComplement(event.target.value)} placeholder="Apto, sala" /><span className="field-hint">Opcional.</span></label>
           </div>
-          <div className="split">
-            <label>Bairro<input value={district} onChange={(event) => setDistrict(event.target.value)} required /></label>
-            <label>Cidade<input value={city} onChange={(event) => setCity(event.target.value)} required /></label>
-            <label>Estado<input value={state} onChange={(event) => setState(event.target.value.toUpperCase().slice(0, 2))} required /></label>
+          <div className="split cols-3">
+            <label>Bairro<input value={district} onChange={(event) => setDistrict(event.target.value)} placeholder="Bairro" required /></label>
+            <label>Cidade<input value={city} onChange={(event) => setCity(event.target.value)} placeholder="Salvador" required /></label>
+            <label>Estado<input value={state} onChange={(event) => setState(event.target.value.toUpperCase().slice(0, 2))} placeholder="UF" required /></label>
           </div>
           <DevExampleFill onClick={() => void fillExample()} />
           <div className="row">
-            <Link to="/credits">Trocar pacote</Link>
+            <Link to="/credits">← Trocar pacote</Link>
             <button className="primary" type="submit" disabled={pending || !offer}>Ir para o pagamento</button>
           </div>
         </section>
-        <aside className="panel">
+        <aside className="panel billing-summary">
           <h3>Resumo</h3>
           {offer ? (
             <>
               <div className="summary-line"><span>Pacote</span><strong>{offer.name}</strong></div>
               <div className="summary-line"><span>Créditos</span><strong>{offer.creditCount}</strong></div>
               <div className="summary-line"><span>Valor por crédito</span><strong>{formatBrl(offer.pricePerCreditCents)}</strong></div>
-              <div className="summary-line"><span>Total</span><strong>{formatBrl(offer.totalCents)}</strong></div>
+              <div className="summary-line total"><span>Total</span><strong>{formatBrl(offer.totalCents)}</strong></div>
             </>
           ) : <p>Escolha um pacote.</p>}
           <p className="hint">Telefone e endereço são usados só para o faturamento e ficam no serviço de pagamentos, separado do cadastro.</p>
         </aside>
       </form>
+      </div>
     </AppShell>
   )
 }

@@ -1,0 +1,46 @@
+/* Data table from the Figma (purchase history, records list).
+   separate (not collapse) so border-radius applies to the table border. */
+.data-table {
+  width: 100%;
+  margin: 0;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.data-table tbody tr:last-child td { border-bottom: 0; }
+
+/* 16px between columns: 8px on each side of a cell, 16px at the edges. */
+.data-table th,
+.data-table td { padding-left: 8px; padding-right: 8px; text-align: left; vertical-align: middle; }
+.data-table th:first-child,
+.data-table td:first-child { padding-left: 16px; }
+.data-table th:last-child,
+.data-table td:last-child { padding-right: 16px; }
+
+.data-table th {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-muted);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--color-muted);
+}
+
+.data-table td {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-line);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--color-ink);
+}
+
+/* Badge inside a link (e.g. order state linking to the order) */
+.data-table .state-link { text-decoration: none; }

@@ -3,12 +3,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
 import { ProviderDown } from '@/components/credits/ProviderDown'
 import { Steps } from '@/components/credits/Steps'
-import { StatusBadge } from '@/components/ui/StatusBadge'
+import { PaymentStateBadge } from '@/components/credits/PaymentStateBadge'
 import { useSession } from '@/hooks/useSession'
 import { api, userMessage } from '@/services/api'
 import type { OrderRow, PackageOffer } from '@/types/credits'
 import { formatBrl, formatDateTimeUtc } from '@/utils/format'
-import { paymentStateLabel } from '@/utils/paymentState'
 import { packageKey } from './selectedPackage'
 import './credits.css'
 
@@ -47,6 +46,7 @@ export function CreditsPage() {
 
   return (
     <AppShell>
+      <div className="credits-page">
       <h2>Comprar créditos</h2>
       <Steps current={1} />
       {error ? <p className="alert" role="alert">{error}</p> : null}
@@ -54,11 +54,13 @@ export function CreditsPage() {
       <div className="packages">
         {items.map((item) => (
           <article key={item.id} className={item.id === selected ? 'package selected' : 'package'}>
-            <h3>{item.name}</h3>
+            <div className="package-head">
+              <h3>{item.name}</h3>
+              {item.id === selected ? <span className="selected-tag">Selecionado</span> : null}
+            </div>
             <p className="credits-count">{item.creditCount} créditos</p>
-            <p className="hint">{formatBrl(item.pricePerCreditCents)} por crédito · total {formatBrl(item.totalCents)}</p>
-            <p>{item.description}</p>
-            {item.id === selected ? <StatusBadge tone="APROVADO">Selecionado</StatusBadge> : null}
+            <p className="package-price">{formatBrl(item.pricePerCreditCents)} por crédito · total {formatBrl(item.totalCents)}</p>
+            <p className="package-description">{item.description}</p>
             <button className={item.id === selected ? 'primary' : 'secondary'} type="button" onClick={() => {
               choose(item.id)
               navigate('/credits/billing')
@@ -68,10 +70,10 @@ export function CreditsPage() {
           </article>
         ))}
       </div>
-      <p className="hint">O preço fica congelado no momento da compra. Cada registro consome 1 crédito.</p>
-      <section className="panel">
+      <p className="packages-note">O preço fica congelado no momento da compra. Cada registro consome 1 crédito.</p>
+      <section className="panel history">
         <h3>Histórico de compras</h3>
-        <table className="grid">
+        <table className="data-table">
           <thead>
             <tr><th>Data (UTC)</th><th>Pacote</th><th>Créditos</th><th>Forma</th><th>Estado</th></tr>
           </thead>
@@ -82,7 +84,7 @@ export function CreditsPage() {
                 <td>{order.packageName}</td>
                 <td>{order.creditCount}</td>
                 <td>{order.method === 'pix' ? 'Pix' : 'Mercado Pago'}</td>
-                <td><Link to={`/credits/orders/${order.id}`}><StatusBadge tone={order.state}>{order.state} · {paymentStateLabel[order.state]}</StatusBadge></Link></td>
+                <td><Link className="state-link" to={`/credits/orders/${order.id}`}><PaymentStateBadge state={order.state} /></Link></td>
               </tr>
             ))}
             {orders.length === 0 ? <tr><td colSpan={5}>Nenhuma compra ainda.</td></tr> : null}
@@ -90,6 +92,7 @@ export function CreditsPage() {
         </table>
       </section>
       {current ? null : null}
+      </div>
     </AppShell>
   )
 }

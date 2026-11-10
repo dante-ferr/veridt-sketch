@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
-import { StatusBadge } from '@/components/ui/StatusBadge'
+import { StateBadge } from '@/components/ui/StateBadge'
 import { useSession } from '@/hooks/useSession'
 import { api, userMessage } from '@/services/api'
 import type { RecordListItem } from '@/types/capture'
 import { formatIsoUtc } from '@/utils/format'
 import './records.css'
+import './RecordsPage.css'
 
 export function RecordsPage() {
   const session = useSession()
@@ -36,10 +37,11 @@ export function RecordsPage() {
 
   return (
     <AppShell>
+      <div className="records-page">
       <div className="heading-row">
         <div>
           <h2>Registros realizados</h2>
-          <p className="hint">Horários em UTC, ordenados pela data de início.</p>
+          <p className="subtitle">Horários em UTC · ordenados pela data de início</p>
         </div>
         <Link className="button" to="/records/new">Iniciar registro</Link>
       </div>
@@ -61,19 +63,19 @@ export function RecordsPage() {
           </select>
         </div>
       </div>
-      <table className="grid">
+      <table className="data-table records-table">
         <thead>
           <tr><th>Título</th><th>Início (UTC)</th><th>Fim (UTC)</th><th>Estado</th><th></th></tr>
         </thead>
         <tbody>
           {items.length === 0 ? (
-            <tr><td colSpan={5}>Nenhum registro ainda. A reserva de crédito está bloqueada até a ADR-003.</td></tr>
+            <tr><td colSpan={5}>Nenhum registro ainda.</td></tr>
           ) : items.map((item) => (
             <tr key={item.id}>
-              <td><strong>{item.title}</strong><div className="hint">{item.publicId}</div></td>
-              <td>{formatIsoUtc(item.startedAt)}</td>
-              <td>{formatIsoUtc(item.finishedAt)}</td>
-              <td><StatusBadge tone={item.state}>{item.state}</StatusBadge></td>
+              <td><div className="record-title">{item.title}</div><div className="record-id">{item.publicId}</div></td>
+              <td>{withUtc(item.startedAt)}</td>
+              <td>{withUtc(item.finishedAt)}</td>
+              <td><StateBadge state={item.state} /></td>
               <td>
                 {item.state === 'NA_FILA' || item.state === 'EM_ANDAMENTO'
                   ? <Link to={`/captures/${item.id}`}>Acompanhar</Link>
@@ -84,12 +86,18 @@ export function RecordsPage() {
         </tbody>
       </table>
       <div className="pager">
-        <span>Mostrando {from}–{to} de {total} registros</span>
-        <span>
+        <span className="pager-count">Mostrando {from}–{to} de {total} registros</span>
+        <span className="pager-buttons">
           <button className="secondary" type="button" disabled={page <= 1} onClick={() => setPage(page - 1)}>Anterior</button>
           <button className="secondary" type="button" disabled={page * 5 >= total} onClick={() => setPage(page + 1)}>Próxima</button>
         </span>
       </div>
+      </div>
     </AppShell>
   )
+}
+
+/** Capture times as "YYYY-MM-DD HH:MM:SS UTC" (no milliseconds), as in the Figma; "–" when there is no date. */
+function withUtc(value: string | null): string {
+  return value ? `${formatIsoUtc(value).slice(0, 19)} UTC` : formatIsoUtc(value)
 }

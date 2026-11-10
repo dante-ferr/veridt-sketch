@@ -1,21 +1,472 @@
-.packages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 18px; }
-.package { background: #fff; border: 1px solid #e7e2d8; border-radius: 10px; padding: 22px; display: flex; flex-direction: column; gap: 8px; }
-.package.selected { border: 2px solid #143f3c; }
-.package h3 { margin: 0; font-size: 22px; }
-.credits-count { margin: 0; font-size: 28px; letter-spacing: -0.03em; }
-.wizard { margin: 8px 0 0; color: #5c6770; font-weight: 700; }
-.wizard .here { color: #143f3c; }
-.pay-grid, .billing-grid { display: grid; grid-template-columns: 1.5fr 0.7fr; gap: 18px; }
-.summary-line { display: flex; justify-content: space-between; gap: 12px; margin: 8px 0; }
-.tabs { display: flex; gap: 18px; border-bottom: 1px solid #d5dbe0; margin: 8px 0 16px; }
-.tabs button { background: none; border: 0; border-bottom: 3px solid transparent; padding: 8px 0; font-weight: 700; color: #5c6770; cursor: pointer; }
-.tabs button.active { color: #143f3c; border-bottom-color: #143f3c; }
-.pix-row { display: flex; gap: 16px; align-items: flex-start; }
-.qr { width: 180px; min-height: 180px; border: 2px dashed #c5ced6; display: flex; align-items: center; text-align: center; padding: 12px; color: #5c6770; background: #faf9f6; }
-.pix-box { background: #e7f2ef; border-radius: 8px; padding: 12px; word-break: break-all; margin-top: 8px; }
-.provider-down { border: 1px solid #c2410c; border-radius: 8px; padding: 16px; margin-top: 16px; }
-.provider-down strong { color: #c2410c; }
+/* Purchase wizard steps (shared by Comprar créditos, Faturamento and Pagamento) */
+.wizard {
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+.wizard .here { color: var(--color-seal); }
+.wizard .done { color: var(--color-ok); }
+.wizard .todo { color: var(--color-muted); }
+
+/* ── Comprar créditos (CreditsPage), per the Figma spec ── */
+.credits-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.credits-page > h2 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 40px;
+  color: var(--color-ink);
+}
+
+.credits-page > .alert { margin: 0; }
+
+/* Package cards */
+.packages {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.package {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  background: var(--color-surface);
+}
+
+.package.selected { border: 2px solid var(--color-seal); }
+
+.package-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.package h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--color-ink);
+}
+
+.selected-tag {
+  padding: 2px 8px;
+  border-radius: 2px;
+  background: var(--color-seal-tint);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--color-seal);
+}
+
+.credits-count {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 40px;
+  color: var(--color-ink);
+}
+
+.package-price,
+.package-description {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+}
+.package-price { color: var(--color-muted); }
+.package-description { color: var(--color-ink); }
+
+.package button.primary,
+.package button.secondary {
+  width: 100%;
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+.package button.primary { background: var(--color-seal); color: #FFFFFF; }
+.package button.secondary {
+  border: 1px solid var(--color-muted);
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
+.packages-note {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--color-muted);
+}
+
+/* Purchase history */
+.panel.history {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 24px;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  background: var(--color-surface);
+}
+
+.history h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--color-ink);
+}
+
+/* ── Dados de faturamento (BillingPage), per the Figma spec ── */
+.billing-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  align-items: start;
+  gap: 24px;
+}
+
+.billing-form,
+.billing-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 24px;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  background: var(--color-surface);
+}
+
+.billing-form h3,
+.billing-summary h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--color-ink);
+}
+
+/* Each field is <label>Text<input/></label> */
+.billing-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--color-ink);
+}
+
+.billing-form input {
+  height: 36px;
+  min-height: 36px;
+  padding: 0 8px;
+  border: 1px solid var(--color-muted);
+  border-radius: 2px;
+  background: var(--color-surface);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--color-ink);
+}
+
+.billing-form input::placeholder { color: var(--color-muted); }
+
+.billing-form .field-hint {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--color-muted);
+}
+
+.billing-form .split { display: grid; gap: 16px; }
+.billing-form .split.cols-2 { grid-template-columns: 1fr 1fr; }
+.billing-form .split.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.billing-form .split.narrow-first { grid-template-columns: 180px minmax(0, 1fr); }
+
+.billing-form .row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-line);
+}
+
+.billing-form .row a {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  text-decoration: underline;
+  color: var(--color-seal);
+}
+
+.billing-form button.primary {
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: 4px;
+  background: var(--color-seal);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #FFFFFF;
+}
+
+/* Summary card */
+.billing-summary .summary-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--color-ink);
+}
+.billing-summary .summary-line span { font-weight: 400; }
+.billing-summary .summary-line strong { font-weight: 500; }
+.billing-summary .summary-line.total {
+  padding-top: 8px;
+  border-top: 1px solid var(--color-line);
+}
+
+.billing-summary .hint {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--color-muted);
+}
+
+/* ── Pagamento (PaymentPage), per the Figma spec ── */
+
+/* Tabs above the two columns */
+.pay-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-muted);
+}
+
+.pay-tabs button {
+  padding: 11px 24px 8px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: none;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.pay-tabs button.active {
+  border-bottom-color: var(--color-seal);
+  font-weight: 500;
+  color: var(--color-seal);
+}
+
+.pay-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  align-items: start;
+  gap: 24px;
+}
+
+/* Left card: QR box + Pix content */
+.pay-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 24px;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  background: var(--color-surface);
+}
+
+.qr {
+  flex: none;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border: 2px dashed var(--color-muted);
+  border-radius: 2px;
+  background: var(--color-paper);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+.pix-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pix-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pix-expires {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--color-muted);
+}
+
+.pix-instruction {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--color-ink);
+}
+
+.pix-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 16px 16px;
+  border-radius: 2px;
+  background: var(--color-seal-tint);
+}
+
+.pix-box-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pix-box-head strong {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--color-ink);
+}
+
+.pix-copy {
+  padding: 2px 8px;
+  border: 1px solid var(--color-seal);
+  border-radius: 2px;
+  background: var(--color-surface);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--color-seal);
+  cursor: pointer;
+}
+
+.pix-code {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--color-ink);
+  word-break: break-all;
+}
+
+.pix-note {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--color-muted);
+}
+
+/* Local fake provider only (not in Figma): primary button style */
+.pay-test {
+  align-self: flex-start;
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: 4px;
+  background: var(--color-seal);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #FFFFFF;
+}
+
+/* Summary card: same as billing, plus the Mercado Pago block */
+.pay-alternative {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-line);
+}
+
+.pay-alternative-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--color-ink);
+}
+
+.pay-checkout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 16px;
+  border: 1px solid var(--color-muted);
+  border-radius: 4px;
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+/* Payment provider down (Comprar créditos, Faturamento and Pagamento) */
+.provider-down {
+  margin: 0;
+  padding: 16px 24px;
+  border: 1px solid var(--color-fail);
+  border-radius: 4px;
+  background: var(--color-surface);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--color-ink);
+}
+
+.provider-down strong {
+  font-weight: 600;
+  color: var(--color-fail);
+}
 
 @media (max-width: 800px) {
-  .packages, .pay-grid, .billing-grid { grid-template-columns: 1fr; }
+  .packages { flex-direction: column; align-items: stretch; }
+  .pay-card { flex-direction: column; }
+  .pay-grid, .billing-grid, .billing-form .split.cols-2, .billing-form .split.cols-3, .billing-form .split.narrow-first { grid-template-columns: 1fr; }
 }

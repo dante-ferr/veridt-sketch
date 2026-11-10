@@ -6,6 +6,11 @@
   --color-seal: #0F4C5C;
   --color-seal-tint: #DCEAE9;
   --color-fail: #B4441C;
+  --color-ok: #1D5F8A;
+  --color-pending: #8A6A12;
+  --color-paper: #F6F4EF;
+
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
   color: #1c2430;
   background: #f3f0e8;
